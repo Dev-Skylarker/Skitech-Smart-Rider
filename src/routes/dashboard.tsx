@@ -346,8 +346,7 @@ function ActiveView({ profile }: { profile: Profile }) {
         </div>
 
         {/* QR Code Section */}
-        <div className="flex flex-col items-center justify-center mt-12 mb-4">
-          <div className="text-sm font-bold opacity-50 mb-6 tracking-wider uppercase text-foreground">Your Digital QR Sticker</div>
+        <div className="flex flex-col items-center justify-center mt-6 mb-4">
           <div className="relative">
             {/* Sticker container to be exported */}
             <div 
