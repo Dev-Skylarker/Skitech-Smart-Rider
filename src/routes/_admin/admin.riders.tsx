@@ -10,7 +10,14 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { ExternalLink, Pencil } from "lucide-react";
 
-export const Route = createFileRoute("/_admin/admin/riders")({ component: AdminRiders });
+export const Route = createFileRoute("/_admin/admin/riders")({
+  component: AdminRiders,
+  validateSearch: (search: Record<string, unknown>) => {
+    return {
+      status: (search.status as string) || "all",
+    };
+  },
+});
 
 type Row = {
   id: string;
@@ -37,7 +44,8 @@ function AdminRiders() {
   const [count, setCount] = useState(0);
   const [page, setPage] = useState(0);
   const [q, setQ] = useState("");
-  const [status, setStatus] = useState<string>("all");
+  const search = Route.useSearch();
+  const [status, setStatus] = useState<string>(search.status);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -49,7 +57,7 @@ function AdminRiders() {
         .select("id,full_name,display_name,phone,plate_number,route,city,status,qr_slug,created_at", { count: "exact" })
         .order("created_at", { ascending: false })
         .range(page * PAGE, page * PAGE + PAGE - 1);
-      if (status !== "all") query = query.eq("status", status);
+      if (status !== "all") query = query.eq("status", status as any);
       if (q.trim()) {
         const t = `%${q.trim()}%`;
         query = query.or(`full_name.ilike.${t},display_name.ilike.${t},phone.ilike.${t},plate_number.ilike.${t}`);
@@ -122,7 +130,7 @@ function AdminRiders() {
                 <TableCell>{statusBadge(r.status)}</TableCell>
                 <TableCell className="text-right">
                   <div className="flex justify-end gap-1">
-                    <Link to="/admin/riders/$id" params={{ id: r.id }}>
+                    <Link to="/admin/riders/$id" params={{ id: r.id }} search={(prev) => prev}>
                       <Button size="sm" variant="ghost"><Pencil className="h-4 w-4" /></Button>
                     </Link>
                     {r.status === "active" && (

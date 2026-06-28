@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
+import { useIsAdmin } from "@/hooks/use-is-admin";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { Button } from "@/components/ui/button";
@@ -55,6 +56,12 @@ function Dashboard() {
     if (!loading && !user) nav({ to: "/login", search: { redirect: "/dashboard" } });
   }, [loading, user, nav]);
 
+  const { isAdmin, checking } = useIsAdmin();
+
+  useEffect(() => {
+    if (!checking && isAdmin) nav({ to: "/admin" });
+  }, [checking, isAdmin, nav]);
+
   useEffect(() => {
     if (!user) return;
     supabase
@@ -68,7 +75,7 @@ function Dashboard() {
       });
   }, [user]);
 
-  if (loading || fetching) {
+  if (loading || fetching || checking || isAdmin) {
     return (
       <div className="min-h-screen bg-background">
         <SiteHeader />

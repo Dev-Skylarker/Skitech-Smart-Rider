@@ -33,6 +33,7 @@ CREATE TABLE IF NOT EXISTS public.user_roles (
 -- ============================================================
 CREATE TABLE IF NOT EXISTS public.profiles (
   id            UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  email         TEXT,
   full_name     TEXT,
   display_name  TEXT,
   phone         TEXT,
@@ -237,10 +238,11 @@ BEGIN
   ON CONFLICT (user_id, role) DO NOTHING;
 
   -- Insert empty profile with UUID-based qr_slug
-  INSERT INTO public.profiles (id, full_name, qr_slug, status)
+  INSERT INTO public.profiles (id, full_name, email, qr_slug, status)
   VALUES (
     NEW.id,
     COALESCE(NEW.raw_user_meta_data->>'full_name', NULL),
+    NEW.email,
     gen_random_uuid()::TEXT,
     'draft'
   )

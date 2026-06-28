@@ -58,14 +58,14 @@ function AdminOverview() {
   if (!m) return <div className="text-muted-foreground">Loading metrics…</div>;
 
   const tiles = [
-    { icon: Users, label: "Total riders", value: m.ridersTotal },
-    { icon: UserCheck, label: "Active", value: m.active },
-    { icon: Hourglass, label: "Pending payment", value: m.pendingPayment },
-    { icon: FileEdit, label: "Drafts", value: m.draft },
-    { icon: Package, label: "Orders pending", value: m.ordersPending },
-    { icon: Package, label: "Orders paid", value: m.ordersPaid },
-    { icon: Package, label: "Shipped", value: m.ordersShipped },
-    { icon: CircleDollarSign, label: "Revenue (KES)", value: m.revenueKes.toLocaleString() },
+    { icon: Users, label: "Total riders", value: m.ridersTotal, to: "/admin/riders", search: { status: "all" } },
+    { icon: UserCheck, label: "Active", value: m.active, to: "/admin/riders", search: { status: "active" } },
+    { icon: Hourglass, label: "Pending payment", value: m.pendingPayment, to: "/admin/riders", search: { status: "pending_payment" } },
+    { icon: FileEdit, label: "Drafts", value: m.draft, to: "/admin/riders", search: { status: "draft" } },
+    { icon: Package, label: "Orders pending", value: m.ordersPending, to: "/admin/orders", search: { status: "pending" } },
+    { icon: Package, label: "Orders paid", value: m.ordersPaid, to: "/admin/orders", search: { status: "paid" } },
+    { icon: Package, label: "Shipped", value: m.ordersShipped, to: "/admin/orders", search: { status: "shipped" } },
+    { icon: CircleDollarSign, label: "Revenue (KES)", value: m.revenueKes.toLocaleString(), to: "/admin/orders", search: { status: "paid" } },
   ];
 
   return (
@@ -76,11 +76,18 @@ function AdminOverview() {
       </div>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {tiles.map((t) => (
-          <div key={t.label} className="rounded-2xl border bg-card p-5">
-            <t.icon className="h-5 w-5 text-primary" />
-            <div className="mt-3 text-xs text-muted-foreground">{t.label}</div>
+          <Link
+            key={t.label}
+            to={t.to as any}
+            search={t.search as any}
+            className="rounded-2xl border bg-card p-5 block transition-all hover:border-primary/50 hover:shadow-md cursor-pointer group"
+          >
+            <div className="flex items-start justify-between">
+              <t.icon className="h-5 w-5 text-primary transition-transform group-hover:scale-110" />
+            </div>
+            <div className="mt-3 text-xs text-muted-foreground group-hover:text-foreground transition-colors">{t.label}</div>
             <div className="text-2xl font-bold">{t.value}</div>
-          </div>
+          </Link>
         ))}
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
@@ -94,8 +101,8 @@ function AdminOverview() {
         </div>
       </div>
       <div className="flex gap-3">
-        <Link to="/admin/riders" className="text-sm text-primary underline">Manage riders →</Link>
-        <Link to="/admin/orders" className="text-sm text-primary underline">Manage orders →</Link>
+        <Link to="/admin/riders" search={{ status: "all" }} className="text-sm text-primary underline">Manage riders →</Link>
+        <Link to="/admin/orders" search={{ status: "pending" }} className="text-sm text-primary underline">Manage orders →</Link>
       </div>
     </div>
   );

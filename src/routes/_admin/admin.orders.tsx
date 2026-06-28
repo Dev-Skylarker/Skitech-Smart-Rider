@@ -14,7 +14,14 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { CheckCircle2, Printer, Truck } from "lucide-react";
 
-export const Route = createFileRoute("/_admin/admin/orders")({ component: AdminOrders });
+export const Route = createFileRoute("/_admin/admin/orders")({
+  component: AdminOrders,
+  validateSearch: (search: Record<string, unknown>) => {
+    return {
+      status: (search.status as string) || "pending",
+    };
+  },
+});
 
 type Order = {
   id: string;
@@ -37,7 +44,8 @@ function statusBadge(s: string) {
 function AdminOrders() {
   const { user } = useAuth();
   const [orders, setOrders] = useState<Order[]>([]);
-  const [status, setStatus] = useState("pending");
+  const search = Route.useSearch();
+  const [status, setStatus] = useState(search.status);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState<Order | null>(null);
   const [trackingNote, setTrackingNote] = useState("");
@@ -125,7 +133,7 @@ function AdminOrders() {
             ) : orders.map((o) => (
               <TableRow key={o.id}>
                 <TableCell>
-                  <Link to="/admin/riders/$id" params={{ id: o.profile_id }} className="font-medium hover:underline">
+                  <Link to="/admin/riders/$id" params={{ id: o.profile_id }} search={(prev) => prev} className="font-medium hover:underline">
                     {o.profile?.full_name || "—"}
                   </Link>
                 </TableCell>
