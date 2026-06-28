@@ -95,6 +95,28 @@
   --sidebar-ring: oklch(0.704 0.04 256.788);
 }
 
+.light-theme-forced {
+  --background: oklch(0.99 0.001 0);
+  --foreground: oklch(0.18 0.03 40);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.18 0.03 40);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.18 0.03 40);
+  --primary: oklch(0.67 0.22 35);
+  --primary-foreground: oklch(0.99 0.001 0);
+  --secondary: oklch(0.62 0.25 30);
+  --secondary-foreground: oklch(0.99 0.001 0);
+  --accent: oklch(0.65 0.18 100);
+  --accent-foreground: oklch(0.18 0.03 40);
+  --muted: oklch(0.96 0.01 70);
+  --muted-foreground: oklch(0.45 0.03 50);
+  --destructive: oklch(0.6 0.22 27);
+  --destructive-foreground: oklch(0.99 0.001 0);
+  --border: oklch(0.92 0.01 70);
+  --input: oklch(0.97 0.005 70);
+  --ring: oklch(0.67 0.22 35);
+}
+
 /* ─── DARK MODE ──────────────────────────────────────────────────── */
 .dark,
 [data-theme="dark"] {

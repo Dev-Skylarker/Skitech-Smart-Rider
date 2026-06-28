@@ -20,6 +20,7 @@ BUILD_STATUS.txt
 .vercel/
 Thumbs.db
 desktop.ini
+supabase
 
 # Documentation (unused in production)
 IMPLEMENTATION_SUMMARY.md

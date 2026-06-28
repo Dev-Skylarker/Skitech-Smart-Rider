@@ -385,7 +385,7 @@ function ActiveView({ profile }: { profile: Profile }) {
             {/* Sticker container to be exported */}
             <div 
               id="qr-sticker-container"
-              className="relative w-[320px] rounded-3xl bg-gradient-to-br from-primary to-primary/90 p-6 pb-7 overflow-hidden flex flex-col"
+              className="relative w-[320px] rounded-3xl bg-gradient-to-br from-primary to-primary/90 p-6 pb-7 overflow-hidden flex flex-col light-theme-forced"
             >
               {/* Decorative waves */}
               <svg className="absolute inset-0 w-full h-full opacity-90" viewBox="0 0 380 475" preserveAspectRatio="none">

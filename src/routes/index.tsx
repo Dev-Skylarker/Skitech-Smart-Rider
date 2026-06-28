@@ -102,7 +102,7 @@ function Landing() {
                 <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 blur-3xl scale-110 animate-pulse" />
 
                 {/* Main sticker card */}
-                <div className="relative w-[320px] sm:w-[380px] aspect-square rounded-3xl bg-gradient-to-br from-primary to-primary/90 p-6 shadow-2xl transform hover:scale-105 transition-transform duration-500">
+                <div className="relative w-[320px] sm:w-[380px] aspect-square rounded-3xl bg-gradient-to-br from-primary to-primary/90 p-6 shadow-2xl transform hover:scale-105 transition-transform duration-500 light-theme-forced">
                   {/* Decorative waves */}
                   <svg className="absolute inset-0 w-full h-full opacity-90" viewBox="0 0 380 380" preserveAspectRatio="none">
                     <path d="M0,280 C120,220 240,320 380,250 L380,380 L0,380 Z" fill="var(--secondary)" />
