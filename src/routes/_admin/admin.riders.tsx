@@ -177,7 +177,9 @@ function AdminUsers() {
       return;
     }
     setSaving(true);
-    const { error } = await supabase.auth.resetPasswordForEmail(editData.email);
+    const { error } = await supabase.auth.resetPasswordForEmail(editData.email.trim(), {
+      redirectTo: `${window.location.origin}/dashboard`
+    });
     setSaving(false);
     
     if (error) {
