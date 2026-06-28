@@ -311,7 +311,7 @@ function Signup() {
         open={successDialog}
         onOpenChange={setSuccessDialog}
         title="Account Created!"
-        description={<>Your account has been successfully created. Please check your email inbox (<strong>{form.email}</strong>) to verify your account.</>}
+        description={<>The account has been created, and an activation link has been sent to the registered email (<strong>{form.email}</strong>).</>}
         icon={<CheckCircle2 className="h-6 w-6 text-primary" />}
         iconBg="bg-primary/15"
       >
