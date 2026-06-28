@@ -262,16 +262,37 @@ CREATE TRIGGER on_auth_user_created
   FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
 
 -- Backfill profiles for auth users created before the signup trigger existed
-INSERT INTO public.profiles (id, full_name, qr_slug, status)
-SELECT
-  u.id,
-  COALESCE(u.raw_user_meta_data->>'full_name', NULL),
-  gen_random_uuid()::TEXT,
-  'draft'::profile_status
-FROM auth.users u
-LEFT JOIN public.profiles p ON p.id = u.id
-WHERE p.id IS NULL
-ON CONFLICT (id) DO NOTHING;
+INSERT INTO public.profiles (id, full_name, email, qr_slug, status)
+SELECT id, raw_user_meta_data->>'full_name', email, gen_random_uuid()::TEXT, 'draft'
+FROM auth.users
+WHERE id NOT IN (SELECT id FROM public.profiles);
+
+-- Backfill missing emails for users whose profile was created before the email column was added
+UPDATE public.profiles
+SET email = auth.users.email
+FROM auth.users
+WHERE public.profiles.id = auth.users.id
+AND public.profiles.email IS NULL;
+
+-- Keep profiles.email up to date when auth.users.email changes
+CREATE OR REPLACE FUNCTION public.handle_user_update()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+  UPDATE public.profiles
+  SET email = NEW.email
+  WHERE id = NEW.id;
+  RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS on_auth_user_updated ON auth.users;
+CREATE TRIGGER on_auth_user_updated
+  AFTER UPDATE OF email ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION public.handle_user_update();
 
 -- Updated_at triggers
 DROP TRIGGER IF EXISTS profiles_updated_at ON public.profiles;
