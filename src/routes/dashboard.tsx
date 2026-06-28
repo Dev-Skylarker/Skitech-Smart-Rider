@@ -21,6 +21,8 @@ import {
   Pencil,
   Star,
   Download,
+  ShieldCheck,
+  Zap,
 } from "lucide-react";
 import { toast } from "sonner";
 import { toPng } from "html-to-image";
@@ -346,55 +348,56 @@ function ActiveView({ profile }: { profile: Profile }) {
         {/* QR Code card */}
         <div className="rounded-2xl bg-gradient-to-br from-primary to-secondary text-primary-foreground p-6 flex flex-col items-center justify-center relative overflow-hidden">
           <div className="text-xs font-bold opacity-80 mb-4 tracking-wider uppercase">Your Digital QR Sticker</div>
-          
-          {/* Sticker container to be exported */}
-          <div 
-            id="qr-sticker-container"
-            className="relative w-[320px] aspect-square rounded-3xl bg-gradient-to-br from-primary to-primary/90 p-6 shadow-2xl"
-          >
-            {/* Decorative waves */}
-            <svg className="absolute inset-0 w-full h-full opacity-90 rounded-3xl overflow-hidden" viewBox="0 0 380 380" preserveAspectRatio="none">
-              <path d="M0,280 C120,220 240,320 380,250 L380,380 L0,380 Z" fill="var(--secondary)" />
-              <path d="M0,310 C130,260 260,330 380,290 L380,380 L0,380 Z" fill="var(--secondary)" opacity="0.7" />
-            </svg>
+          <div className="relative">
+            {/* Sticker container to be exported */}
+            <div 
+              id="qr-sticker-container"
+              className="relative w-[320px] aspect-square rounded-3xl bg-gradient-to-br from-primary to-primary/90 p-6 overflow-hidden"
+            >
+              {/* Decorative waves */}
+              <svg className="absolute inset-0 w-full h-full opacity-90" viewBox="0 0 380 380" preserveAspectRatio="none">
+                <path d="M0,280 C120,220 240,320 380,250 L380,380 L0,380 Z" fill="var(--secondary)" />
+                <path d="M0,310 C130,260 260,330 380,290 L380,380 L0,380 Z" fill="var(--secondary)" opacity="0.7" />
+              </svg>
 
-            {/* Header */}
-            <div className="relative flex items-start justify-between text-primary-foreground mb-4">
-              <div className="flex items-center gap-2">
-                <img src={logoImg} alt="Logo" className="h-8 w-8 rounded-full" />
-                <div className="font-black text-xl tracking-tight leading-none text-white">
-                  Skitech
-                  <span className="block text-sm opacity-90">Smart Rider</span>
+              {/* Header */}
+              <div className="relative flex items-start justify-between text-primary-foreground mb-4">
+                <div className="text-3xl font-black tracking-tight">SCAN</div>
+                <div className="h-12 w-12 rounded-lg bg-primary-foreground text-primary grid place-items-center font-black text-xl shadow-lg">ST</div>
+              </div>
+
+              {/* QR Area */}
+              <div className="relative rounded-2xl bg-white p-4 shadow-lg mb-4">
+                <div className="aspect-square w-full rounded-lg bg-gradient-to-br from-muted/50 to-muted grid place-items-center">
+                  <QRCodeSVG
+                    value={url}
+                    size={220}
+                    bgColor="transparent"
+                    fgColor="#1a1a1a"
+                    level="H"
+                    style={{ width: "100%", height: "100%" }}
+                  />
                 </div>
               </div>
-              <div className="h-12 w-12 rounded-lg bg-primary-foreground text-primary grid place-items-center font-black text-xl shadow-lg">
-                ST
+
+              {/* Tagline */}
+              <div className="relative text-center text-primary-foreground">
+                <div className="text-lg font-semibold">For rider profile</div>
+                <div className="text-sm opacity-80 mt-1">Tap to pay</div>
               </div>
             </div>
 
-            {/* QR Area */}
-            <div className="relative rounded-2xl bg-white p-4 shadow-lg mb-4">
-              <div className="aspect-square w-full rounded-lg bg-gradient-to-br from-muted/50 to-muted grid place-items-center p-2">
-                <QRCodeSVG
-                  value={url}
-                  size={200}
-                  bgColor="transparent"
-                  fgColor="#000000"
-                  level="H"
-                  style={{ width: "100%", height: "100%" }}
-                />
-              </div>
+            {/* Floating badges */}
+            <div className="absolute -top-4 -right-4 bg-card rounded-full p-3 shadow-lg">
+              <ShieldCheck className="h-6 w-6 text-primary" />
             </div>
-
-            {/* Tagline */}
-            <div className="relative text-center text-primary-foreground">
-              <div className="text-lg font-semibold">For rider profile</div>
-              <div className="text-sm opacity-80 mt-1">Tap to pay</div>
+            <div className="absolute -bottom-4 -left-4 bg-card rounded-full p-3 shadow-lg">
+              <Zap className="h-6 w-6 text-secondary-foreground bg-secondary rounded-full p-0.5" />
             </div>
           </div>
 
           <Button
-            className="mt-6 gap-2 font-bold w-[320px]"
+            className="mt-10 gap-2 font-bold w-[320px]"
             variant="secondary"
             onClick={async () => {
               const el = document.getElementById("qr-sticker-container");
