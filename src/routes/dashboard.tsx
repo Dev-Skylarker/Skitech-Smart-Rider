@@ -350,10 +350,11 @@ function ActiveView({ profile }: { profile: Profile }) {
           {/* Sticker container to be exported */}
           <div 
             id="qr-sticker-container"
-            className="relative w-[320px] aspect-square rounded-3xl p-6 shadow-2xl overflow-hidden"
+            className="relative w-[320px] aspect-square rounded-3xl p-6 overflow-hidden"
             style={{ 
               background: "linear-gradient(to bottom right, #ef4444, #ea580c)",
-              color: "#ffffff"
+              color: "#ffffff",
+              boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)"
             }}
           >
             {/* Decorative waves */}
@@ -365,22 +366,22 @@ function ActiveView({ profile }: { profile: Profile }) {
             {/* Header / Logo */}
             <div className="relative flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <img src={logoImg} alt="Logo" className="h-8 w-8 rounded-full shadow-sm" style={{ backgroundColor: "#ffffff" }} />
-                <div className="font-black tracking-tight leading-none text-white text-lg drop-shadow-md">
+                <img src={logoImg} alt="Logo" className="h-8 w-8 rounded-full" style={{ backgroundColor: "#ffffff" }} />
+                <div className="font-black tracking-tight leading-none text-lg" style={{ color: "#ffffff" }}>
                   Skitech
                   <span className="block text-sm opacity-90">Smart Rider</span>
                 </div>
               </div>
               <div 
-                className="h-10 w-10 rounded-lg grid place-items-center font-black text-lg shadow-lg"
-                style={{ backgroundColor: "#ffffff", color: "#ef4444" }}
+                className="h-10 w-10 rounded-lg grid place-items-center font-black text-lg"
+                style={{ backgroundColor: "#ffffff", color: "#ef4444", boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)" }}
               >
                 ST
               </div>
             </div>
 
             {/* QR Area */}
-            <div className="relative rounded-2xl p-4 shadow-lg mb-4" style={{ backgroundColor: "#ffffff" }}>
+            <div className="relative rounded-2xl p-4 mb-4" style={{ backgroundColor: "#ffffff", boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)" }}>
               <div className="aspect-square w-full rounded-lg grid place-items-center overflow-hidden" style={{ backgroundColor: "#f5f5f5" }}>
                 <QRCodeSVG
                   value={url}
@@ -394,7 +395,7 @@ function ActiveView({ profile }: { profile: Profile }) {
             </div>
 
             {/* Tagline */}
-            <div className="relative text-center text-white drop-shadow-md">
+            <div className="relative text-center" style={{ color: "#ffffff" }}>
               <div className="text-lg font-bold">For rider profile</div>
               <div className="text-sm font-medium opacity-90 mt-0.5">Tap to pay</div>
             </div>
