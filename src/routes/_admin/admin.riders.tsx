@@ -112,7 +112,7 @@ function AdminUsers() {
       city: editData.city,
       bio: editData.bio,
       trust_score: editData.trust_score,
-      status: editData.status,
+      status: editData.status as any,
     }).eq("id", editData.id);
     
     setSaving(false);
@@ -149,7 +149,7 @@ function AdminUsers() {
 
     setSaving(true);
     // Call the security definer function to delete from auth.users (which cascades to profiles)
-    const { error } = await supabase.rpc("admin_delete_user", { target_user_id: editData.id });
+    const { error } = await (supabase.rpc as any)("admin_delete_user", { target_user_id: editData.id });
     setSaving(false);
 
     if (error) {

@@ -97,7 +97,7 @@ function AccountPage() {
 
   async function handleDeleteAccount() {
     setDeleting(true);
-    const { error } = await supabase.rpc("delete_own_account");
+    const { error } = await (supabase.rpc as any)("delete_own_account");
     setDeleting(false);
 
     if (error) {
