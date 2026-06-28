@@ -496,6 +496,14 @@ BEGIN
     RAISE EXCEPTION 'Unauthorized: Only admins can delete users.';
   END IF;
 
+  -- Clean up storage objects owned by the user to prevent FK constraint violations
+  DELETE FROM storage.objects WHERE owner = target_user_id;
+
+  -- Remove references where the user might be a creator/confirmer (if they were an admin)
+  UPDATE public.profile_orders SET confirmed_by = NULL WHERE confirmed_by = target_user_id;
+  UPDATE public.merch_orders SET confirmed_by = NULL WHERE confirmed_by = target_user_id;
+  UPDATE public.shop_items SET created_by = NULL WHERE created_by = target_user_id;
+
   -- Delete the user from auth.users (cascades to public.profiles)
   DELETE FROM auth.users WHERE id = target_user_id;
   
