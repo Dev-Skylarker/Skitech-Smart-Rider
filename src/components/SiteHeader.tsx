@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useAuth } from "@/lib/auth";
-import { useIsStaff } from "@/hooks/use-is-admin";
+import { useIsAdmin } from "@/hooks/use-is-admin";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Menu, Moon, Sun, ShoppingCart, LayoutDashboard, LogOut, Shield } from "lucide-react";
@@ -10,7 +10,7 @@ import logoImg from "@/assets/logo.png";
 
 export function SiteHeader() {
   const { user, signOut } = useAuth();
-  const { isStaff } = useIsStaff();
+  const { isAdmin } = useIsAdmin();
   const { isDark, toggleTheme } = useTheme();
   const [open, setOpen] = useState(false);
 
@@ -64,7 +64,7 @@ export function SiteHeader() {
           <div className="hidden md:flex items-center gap-2">
             {user ? (
               <>
-                {isStaff && (
+                {isAdmin && (
                   <Link to="/admin">
                     <Button variant="ghost" size="sm" className="gap-1.5">
                       <Shield className="h-3.5 w-3.5" />
@@ -113,7 +113,7 @@ export function SiteHeader() {
                   {user ? (
                     <>
                       <MobileLink to="/dashboard" onClick={() => setOpen(false)} icon={<LayoutDashboard className="h-4 w-4" />}>Dashboard</MobileLink>
-                      {isStaff && <MobileLink to="/admin" onClick={() => setOpen(false)} icon={<Shield className="h-4 w-4" />} className="text-primary">Admin Panel</MobileLink>}
+                      {isAdmin && <MobileLink to="/admin" onClick={() => setOpen(false)} icon={<Shield className="h-4 w-4" />} className="text-primary">Admin Panel</MobileLink>}
                       <MobileLink to="/shop" onClick={() => setOpen(false)} icon={<ShoppingCart className="h-4 w-4" />}>Shop</MobileLink>
                       <div className="border-t pt-2 mt-2">
                         <button
