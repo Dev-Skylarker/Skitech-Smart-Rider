@@ -5,7 +5,7 @@ import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import {
   Copy, Phone, MessageCircle, Sparkles, MapPin,
-  Check, ArrowRight, Share2, FileText, Flag, ShieldCheck,
+  Check, ArrowRight, ArrowLeft, Share2, FileText, Flag, ShieldCheck,
   AlertTriangle, Shield, ChevronDown, ChevronUp, Building2, Smartphone
 } from "lucide-react";
 import { toast } from "sonner";
@@ -161,14 +161,23 @@ function PublicQR() {
       {/* Sticky header */}
       <div className="sticky top-0 z-50 backdrop-blur-md bg-background/60 border-b border-border/50">
         <div className="max-w-md mx-auto px-4 h-14 flex items-center justify-between">
-          <Link to={user ? "/dashboard" : "/"} className="flex items-center gap-2">
-            <img
-              src={logoImg}
-              alt="Skitech Smart Rider"
-              className="h-7 w-7 rounded-full object-cover"
-              onError={(e) => ((e.target as HTMLImageElement).style.display = "none")}
-            />
-            <span className="text-xs font-bold text-foreground">RIDER PROFILE</span>
+          <Link to={user ? "/dashboard" : "/"} className="flex items-center gap-2 transition-colors hover:opacity-80">
+            {user?.id === profile.id ? (
+              <div className="flex items-center text-sm font-medium text-muted-foreground">
+                <ArrowLeft className="h-4 w-4 mr-1" />
+                Back to Dashboard
+              </div>
+            ) : (
+              <>
+                <img
+                  src={logoImg}
+                  alt="Skitech Smart Rider"
+                  className="h-7 w-7 rounded-full object-cover"
+                  onError={(e) => ((e.target as HTMLImageElement).style.display = "none")}
+                />
+                <span className="text-xs font-bold text-foreground">RIDER PROFILE</span>
+              </>
+            )}
           </Link>
           <div className="flex items-center gap-2">
             {/* Trust badge */}

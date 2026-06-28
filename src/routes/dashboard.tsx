@@ -314,12 +314,12 @@ function ActiveView({ profile }: { profile: Profile }) {
                 Edit Details
               </Button>
             </Link>
-            <a href={url} target="_blank" rel="noreferrer">
+            <Link to="/r/$slug" params={{ slug: profile.qr_slug }}>
               <Button variant="secondary" className="w-full gap-2">
                 <ExternalLink className="h-4 w-4" />
                 View Public Page
               </Button>
-            </a>
+            </Link>
           </div>
 
           {/* Shop access */}
