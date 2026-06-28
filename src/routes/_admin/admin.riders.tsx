@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { ExternalLink, Search, Loader2, ArrowLeft, UserX, UserMinus, Pencil, Ban } from "lucide-react";
+import { ExternalLink, Search, Loader2, ArrowLeft, UserX, UserMinus, Pencil, Ban, KeyRound } from "lucide-react";
 import { AppDialog } from "@/components/ui/AppDialog";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
@@ -171,6 +171,22 @@ function AdminUsers() {
     toast.success("Trust score updated");
   }
 
+  async function handleResetPassword() {
+    if (!editData?.email) {
+      toast.error("User does not have an email address attached.");
+      return;
+    }
+    setSaving(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(editData.email);
+    setSaving(false);
+    
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    toast.success(`Password reset email sent to ${editData.email}`);
+  }
+
   const totalPages = useMemo(() => Math.max(1, Math.ceil(count / PAGE)), [count]);
 
   return (
@@ -306,6 +322,11 @@ function AdminUsers() {
                 <Button variant="outline" className="w-full justify-start gap-3 h-12" onClick={() => setPopupMode("edit")}>
                   <Pencil className="h-5 w-5 text-muted-foreground" />
                   Edit User Information
+                </Button>
+
+                <Button variant="outline" className="w-full justify-start gap-3 h-12" onClick={handleResetPassword} disabled={saving || !editData.email}>
+                  <KeyRound className="h-5 w-5 text-muted-foreground" />
+                  Send Password Reset Email
                 </Button>
                 
                 {editData.status !== "suspended" && (
