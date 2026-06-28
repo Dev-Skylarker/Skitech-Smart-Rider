@@ -343,6 +343,33 @@ function ActiveView({ profile }: { profile: Profile }) {
               </Button>
             </div>
           </div>
+          
+          {/* Download Button moved here */}
+          <Button
+            className="mt-6 gap-2 font-bold w-full shadow-md h-12 text-base"
+            variant="default"
+            onClick={async () => {
+              const el = document.getElementById("qr-sticker-container");
+              if (!el) return;
+              try {
+                const dataUrl = await toPng(el, {
+                  cacheBust: true,
+                  pixelRatio: 3,
+                });
+                const a = document.createElement("a");
+                a.href = dataUrl;
+                a.download = `smart-rider-qr-${profile.display_name || "sticker"}.png`;
+                a.click();
+                toast.success("QR sticker downloaded!");
+              } catch (err) {
+                console.error("Export error", err);
+                toast.error("Failed to download QR code");
+              }
+            }}
+          >
+            <Download className="h-4 w-4" />
+            Download QR Sticker
+          </Button>
         </div>
 
         {/* QR Code Section */}
@@ -351,7 +378,7 @@ function ActiveView({ profile }: { profile: Profile }) {
             {/* Sticker container to be exported */}
             <div 
               id="qr-sticker-container"
-              className="relative w-[320px] aspect-[4/5] rounded-3xl bg-gradient-to-br from-primary to-primary/90 p-6 overflow-hidden flex flex-col"
+              className="relative w-[320px] rounded-3xl bg-gradient-to-br from-primary to-primary/90 p-6 pb-7 overflow-hidden flex flex-col"
             >
               {/* Decorative waves */}
               <svg className="absolute inset-0 w-full h-full opacity-90" viewBox="0 0 380 475" preserveAspectRatio="none">
@@ -400,32 +427,6 @@ function ActiveView({ profile }: { profile: Profile }) {
               <Zap className="h-6 w-6 text-secondary-foreground bg-secondary rounded-full p-0.5" />
             </div>
           </div>
-
-          <Button
-            className="mt-12 gap-2 font-bold w-[320px] shadow-md h-12 text-base"
-            variant="default"
-            onClick={async () => {
-              const el = document.getElementById("qr-sticker-container");
-              if (!el) return;
-              try {
-                const dataUrl = await toPng(el, {
-                  cacheBust: true,
-                  pixelRatio: 3,
-                });
-                const a = document.createElement("a");
-                a.href = dataUrl;
-                a.download = `smart-rider-qr-${profile.display_name || "sticker"}.png`;
-                a.click();
-                toast.success("QR sticker downloaded!");
-              } catch (err) {
-                console.error("Export error", err);
-                toast.error("Failed to download QR code");
-              }
-            }}
-          >
-            <Download className="h-4 w-4" />
-            Download QR Sticker
-          </Button>
         </div>
       </div>
     </div>
