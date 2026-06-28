@@ -161,14 +161,14 @@ function PublicQR() {
       {/* Sticky header */}
       <div className="sticky top-0 z-50 backdrop-blur-md bg-background/60 border-b border-border/50">
         <div className="max-w-md mx-auto px-4 h-14 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2">
+          <Link to={user ? "/dashboard" : "/"} className="flex items-center gap-2">
             <img
               src={logoImg}
               alt="Skitech Smart Rider"
               className="h-7 w-7 rounded-full object-cover"
               onError={(e) => ((e.target as HTMLImageElement).style.display = "none")}
             />
-            <span className="text-xs font-bold text-foreground hidden sm:block">Skitech Smart Rider</span>
+            <span className="text-xs font-bold text-foreground">RIDER PROFILE</span>
           </Link>
           <div className="flex items-center gap-2">
             {/* Trust badge */}
@@ -283,14 +283,16 @@ function PublicQR() {
                            primaryPayment.method_type === "paybill" ? "Paybill Number" :
                            primaryPayment.method_type === "pochi_la_biashara" ? "Pochi La Biashara" : "Number"}
                         </div>
-                        <div className="flex items-center justify-between gap-3">
-                          <div>
+                        <div className="flex items-center justify-between gap-3 min-w-0">
+                          <div className="min-w-0 flex-1">
                             {(primaryPayment.account_name || riderName) && (
-                              <div className="font-bold text-foreground text-sm">
+                              <div className="font-bold text-foreground text-sm truncate">
                                 {primaryPayment.account_name || riderName}
                               </div>
                             )}
-                            <div className="font-mono text-lg font-black text-foreground tracking-wider">
+                            <div className={`font-mono font-black text-foreground tracking-wider truncate ${
+                              (primaryPayment.account_number || "").length > 15 ? "text-sm" : "text-lg"
+                            }`}>
                               {primaryPayment.method_type === "paybill"
                                 ? `${primaryPayment.paybill_number} · Acct: ${primaryPayment.account_number}`
                                 : primaryPayment.account_number || "N/A"}
@@ -318,16 +320,16 @@ function PublicQR() {
                     {primaryPayment.method_type === "bank" && (
                       <div className="mb-2">
                         <div className="text-xs text-muted-foreground font-medium mb-0.5">Bank Name · Account No.</div>
-                        <div className="flex items-center justify-between gap-3">
-                          <div>
+                        <div className="flex items-center justify-between gap-3 min-w-0">
+                          <div className="min-w-0 flex-1">
                             {primaryPayment.label && (
-                              <div className="font-bold text-foreground text-sm">{primaryPayment.label}</div>
+                              <div className="font-bold text-foreground text-sm truncate">{primaryPayment.label}</div>
                             )}
-                            <div className="font-mono text-lg font-black text-foreground tracking-wider">
+                            <div className="font-mono text-lg font-black text-foreground tracking-wider truncate">
                               {primaryPayment.account_number || "N/A"}
                             </div>
                             {primaryPayment.account_name && (
-                              <div className="text-xs text-muted-foreground">{primaryPayment.account_name}</div>
+                              <div className="text-xs text-muted-foreground truncate">{primaryPayment.account_name}</div>
                             )}
                           </div>
                           <button
@@ -371,12 +373,14 @@ function PublicQR() {
                                 {methodTypeLabel(m)}{m.label ? ` · ${m.label}` : ""}
                               </span>
                             </div>
-                            <div className="flex items-center justify-between gap-2">
-                              <div>
+                            <div className="flex items-center justify-between gap-2 min-w-0 mt-1">
+                              <div className="min-w-0 flex-1">
                                 {m.account_name && (
-                                  <div className="text-sm font-bold text-foreground">{m.account_name}</div>
+                                  <div className="text-sm font-bold text-foreground truncate">{m.account_name}</div>
                                 )}
-                                <div className="font-mono text-base font-black text-foreground">
+                                <div className={`font-mono font-black text-foreground truncate ${
+                                  (m.account_number || "").length > 15 ? "text-sm" : "text-base"
+                                }`}>
                                   {m.method_type === "paybill"
                                     ? `${m.paybill_number} · Acct: ${m.account_number}`
                                     : m.account_number || "N/A"}
@@ -419,7 +423,7 @@ function PublicQR() {
                       <Phone className="h-4 w-4" /> Call
                     </button>
                   </a>
-                  <a href={`https://wa.me/${profile.phone.replace(/\D/g, "")}`} className="flex-1" target="_blank" rel="noreferrer">
+                  <a href={`https://wa.me/${profile.phone.replace(/^0/, '254').replace(/\D/g, "")}`} className="flex-1" target="_blank" rel="noreferrer">
                     <button className="w-full rounded-xl border border-border bg-background/70 py-3 text-foreground font-bold text-sm active:bg-primary/5 transition-colors flex items-center justify-center gap-1.5">
                       <MessageCircle className="h-4 w-4" /> WhatsApp
                     </button>
@@ -440,22 +444,23 @@ function PublicQR() {
           </div>
         </div>
 
-        {/* Trust badge */}
-        <div className="flex flex-col gap-2 mb-6">
+        <div className="flex flex-col gap-2 mb-8">
           <div className="rounded-xl border bg-card p-3 text-center text-xs text-muted-foreground">
             <span className="font-medium">Verified rider on Skitech Smart Rider</span>
           </div>
         </div>
 
-        {/* CTA for non-users */}
-        {!user && (
-          <div className="text-center mb-6">
-            <p className="text-xs text-muted-foreground mb-3">Are you a rider too?</p>
-            <Link to="/signup">
-              <Button size="sm" className="w-full">Get your own QR profile</Button>
-            </Link>
-          </div>
-        )}
+        {/* CTA for all users */}
+        <div className="text-center mb-8 border-t border-border/50 pt-8">
+          <p className="text-sm text-muted-foreground mb-4 font-medium">
+            Are you a rider or want to join the wave?
+          </p>
+          <Link to="/">
+            <Button size="default" variant="outline" className="w-full border-primary/20 text-primary hover:bg-primary/5 font-bold">
+              Click here to get started
+            </Button>
+          </Link>
+        </div>
 
         <div className="text-center">
           <Link to="/contact" className="text-xs text-muted-foreground hover:text-primary transition-colors">

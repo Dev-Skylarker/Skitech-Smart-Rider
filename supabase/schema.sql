@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   city          TEXT,
   bio           TEXT,
   photo_url     TEXT,
-  qr_slug       TEXT NOT NULL DEFAULT uuid_generate_v4()::TEXT,
+  qr_slug       TEXT NOT NULL DEFAULT gen_random_uuid()::TEXT,
   status        profile_status NOT NULL DEFAULT 'draft',
   trust_score   INTEGER NOT NULL DEFAULT 0 CHECK (trust_score BETWEEN -5 AND 5),
   created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -241,7 +241,7 @@ BEGIN
   VALUES (
     NEW.id,
     COALESCE(NEW.raw_user_meta_data->>'full_name', NULL),
-    uuid_generate_v4()::TEXT,
+    gen_random_uuid()::TEXT,
     'draft'
   )
   ON CONFLICT (id) DO NOTHING;
@@ -261,7 +261,7 @@ INSERT INTO public.profiles (id, full_name, qr_slug, status)
 SELECT
   u.id,
   COALESCE(u.raw_user_meta_data->>'full_name', NULL),
-  uuid_generate_v4()::TEXT,
+  gen_random_uuid()::TEXT,
   'draft'::profile_status
 FROM auth.users u
 LEFT JOIN public.profiles p ON p.id = u.id

@@ -20,8 +20,11 @@ import {
   Clock,
   Pencil,
   Star,
+  Download,
 } from "lucide-react";
 import { toast } from "sonner";
+import html2canvas from "html2canvas";
+import logoImg from "@/assets/logo.png";
 
 type Profile = {
   id: string;
@@ -341,23 +344,72 @@ function ActiveView({ profile }: { profile: Profile }) {
         </div>
 
         {/* QR Code card */}
-        <div className="rounded-2xl bg-gradient-to-br from-primary to-secondary text-primary-foreground p-6 flex flex-col items-center justify-center">
-          <div className="text-xs font-bold opacity-80 mb-3 tracking-wider">YOUR QR CODE</div>
-          <div className="rounded-2xl bg-white p-4 shadow-lg flex flex-col items-center gap-2">
-            <QRCodeSVG
-              value={url}
-              size={160}
-              bgColor="white"
-              fgColor="#1a1a1a"
-              level="H"
-            />
-            <div className="text-xs text-center text-gray-500 font-medium max-w-[160px]">
-              Skitech Smart Rider
+        <div className="rounded-2xl bg-gradient-to-br from-primary to-secondary text-primary-foreground p-6 flex flex-col items-center justify-center relative overflow-hidden">
+          <div className="text-xs font-bold opacity-80 mb-4 tracking-wider uppercase">Your Digital QR Sticker</div>
+          
+          {/* Sticker container to be exported */}
+          <div 
+            id="qr-sticker-container"
+            className="rounded-3xl bg-white p-6 shadow-2xl flex flex-col items-center gap-4 text-black relative w-[280px]"
+            style={{ colorScheme: "light" }}
+          >
+            {/* Header / Logo */}
+            <div className="flex items-center gap-2 w-full justify-center">
+              <img src={logoImg} alt="Logo" className="h-8 w-8 rounded-full" />
+              <div className="font-black text-xl tracking-tight leading-none text-gray-900">
+                Skitech
+                <span className="text-primary block text-sm">Smart Rider</span>
+              </div>
+            </div>
+
+            {/* QR Code */}
+            <div className="rounded-xl border-4 border-gray-100 p-2 bg-white">
+              <QRCodeSVG
+                value={url}
+                size={160}
+                bgColor="white"
+                fgColor="#000000"
+                level="H"
+              />
+            </div>
+
+            {/* Marketing Message */}
+            <div className="text-center w-full px-2">
+              <div className="font-black text-sm uppercase tracking-wide text-gray-900 mb-1">
+                Scan for Rider Info
+              </div>
+              <p className="text-[10px] text-gray-600 font-medium leading-snug">
+                Save contact instantly, copy payment number, and pay faster!
+              </p>
             </div>
           </div>
-          <div className="mt-3 text-xs opacity-80 text-center italic">
-            Scan to view your profile & pay
-          </div>
+
+          <Button
+            className="mt-6 gap-2 font-bold w-[280px]"
+            variant="secondary"
+            onClick={async () => {
+              const el = document.getElementById("qr-sticker-container");
+              if (!el) return;
+              try {
+                const canvas = await html2canvas(el, {
+                  scale: 3, // High resolution
+                  backgroundColor: "#ffffff",
+                });
+                const imgData = canvas.toDataURL("image/png");
+                const a = document.createElement("a");
+                a.href = imgData;
+                a.download = `smart-rider-qr-${profile.display_name || "sticker"}.png`;
+                a.click();
+                toast.success("QR sticker downloaded!");
+              } catch (err) {
+                console.error("Export error", err);
+                toast.error("Failed to download QR code");
+              }
+            }}
+          >
+            <Download className="h-4 w-4" />
+            Download QR Sticker
+          </Button>
         </div>
       </div>
     </div>
