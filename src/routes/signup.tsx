@@ -309,12 +309,13 @@ function Signup() {
 
       <AppDialog
         open={successDialog}
-        onOpenChange={setSuccessDialog}
+        onClose={() => setSuccessDialog(false)}
+        variant="success"
         title="Account Created!"
-        description={<>The account has been created, and an activation link has been sent to the registered email (<strong>{form.email}</strong>).</>}
-        icon={<CheckCircle2 className="h-6 w-6 text-primary" />}
-        iconBg="bg-primary/15"
       >
+        <p className="text-sm text-muted-foreground leading-relaxed mt-1 mb-4">
+          The account has been created, and an activation link has been sent to the registered email (<strong>{form.email}</strong>).
+        </p>
         <div className="flex flex-col gap-3 pt-2">
           <Button 
             onClick={() => window.open("https://mail.google.com/mail/u/0/#inbox", "_blank")}
