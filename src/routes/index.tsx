@@ -110,7 +110,7 @@ function Landing() {
                   </svg>
 
                   {/* Header */}
-                  <div className="relative flex items-center justify-between text-primary-foreground mb-6">
+                  <div className="relative flex items-center justify-center text-primary-foreground mb-6">
                     <div className="flex items-center gap-2">
                       <img src={logoImg} alt="Logo" className="h-10 w-10 rounded-full object-cover shadow-sm bg-white" />
                       <div className="leading-none">
