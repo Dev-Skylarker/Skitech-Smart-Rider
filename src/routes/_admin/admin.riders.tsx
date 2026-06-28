@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { ExternalLink, Search, Loader2 } from "lucide-react";
+import { ExternalLink, Search, Loader2, ArrowLeft } from "lucide-react";
 import { AppDialog } from "@/components/ui/AppDialog";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
@@ -125,9 +125,14 @@ function AdminRiders() {
   return (
     <div className="space-y-4 max-w-7xl">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">Riders</h1>
-          <p className="text-sm text-muted-foreground">{count} total</p>
+        <div className="flex items-center gap-2">
+          <Link to="/admin">
+            <Button variant="ghost" size="icon" className="-ml-2"><ArrowLeft className="h-5 w-5" /></Button>
+          </Link>
+          <div>
+            <h1 className="text-2xl font-bold">Riders</h1>
+            <p className="text-sm text-muted-foreground">{count} total</p>
+          </div>
         </div>
       </div>
 

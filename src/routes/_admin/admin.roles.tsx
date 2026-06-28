@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Trash2, ShieldPlus } from "lucide-react";
+import { Trash2, ShieldPlus, ArrowLeft } from "lucide-react";
 
 export const Route = createFileRoute("/_admin/admin/roles")({ component: AdminRoles });
 
@@ -105,9 +105,14 @@ function AdminRoles() {
 
   return (
     <div className="space-y-6 max-w-4xl">
-      <div>
-        <h1 className="text-2xl font-bold">Roles</h1>
-        <p className="text-sm text-muted-foreground">Grant admin access by email.</p>
+      <div className="flex items-center gap-2">
+        <Link to="/admin">
+          <Button variant="ghost" size="icon" className="-ml-2"><ArrowLeft className="h-5 w-5" /></Button>
+        </Link>
+        <div>
+          <h1 className="text-2xl font-bold">Roles</h1>
+          <p className="text-sm text-muted-foreground">Grant admin access by email.</p>
+        </div>
       </div>
 
       <div className="rounded-2xl border bg-card p-5">

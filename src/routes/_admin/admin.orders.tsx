@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { CheckCircle2, Printer, Truck } from "lucide-react";
+import { CheckCircle2, Printer, Truck, ArrowLeft } from "lucide-react";
 
 export const Route = createFileRoute("/_admin/admin/orders")({
   component: AdminOrders,
@@ -95,9 +95,14 @@ function AdminOrders() {
 
   return (
     <div className="space-y-4 max-w-7xl">
-      <div>
-        <h1 className="text-2xl font-bold">Merch orders</h1>
-        <p className="text-sm text-muted-foreground">Confirm payment, print, ship.</p>
+      <div className="flex items-center gap-2">
+        <Link to="/admin">
+          <Button variant="ghost" size="icon" className="-ml-2"><ArrowLeft className="h-5 w-5" /></Button>
+        </Link>
+        <div>
+          <h1 className="text-2xl font-bold">Merch orders</h1>
+          <p className="text-sm text-muted-foreground">Confirm payment, print, ship.</p>
+        </div>
       </div>
 
       <div className="flex gap-2">

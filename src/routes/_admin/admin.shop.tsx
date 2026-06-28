@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Plus, Pencil, Trash2, X, ImagePlus, Package, Eye, EyeOff } from "lucide-react";
+import { Plus, Pencil, Trash2, X, ImagePlus, Package, Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { AppDialog } from "@/components/ui/AppDialog";
 
 export const Route = createFileRoute("/_admin/admin/shop")({ component: AdminShop });
@@ -173,9 +173,14 @@ function AdminShop() {
   return (
     <div className="space-y-6 max-w-6xl">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">Shop Management</h1>
-          <p className="text-muted-foreground text-sm">{items.length} items in the shop</p>
+        <div className="flex items-center gap-2">
+          <Link to="/admin">
+            <Button variant="ghost" size="icon" className="-ml-2"><ArrowLeft className="h-5 w-5" /></Button>
+          </Link>
+          <div>
+            <h1 className="text-2xl font-bold">Shop Management</h1>
+            <p className="text-muted-foreground text-sm">{items.length} items in the shop</p>
+          </div>
         </div>
         <Button onClick={openCreate} className="gap-2">
           <Plus className="h-4 w-4" /> Add Item
