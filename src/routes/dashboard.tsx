@@ -373,7 +373,7 @@ function ActiveView({ profile }: { profile: Profile }) {
         </div>
 
         {/* QR Code Section */}
-        <div className="w-full lg:w-auto flex-shrink-0 flex flex-col items-center lg:items-end justify-center lg:mt-0">
+        <div className="w-full lg:w-auto flex-shrink-0 flex flex-col items-center lg:items-start justify-center lg:mt-0">
           <div className="relative">
             {/* Sticker container to be exported */}
             <div 
@@ -395,7 +395,6 @@ function ActiveView({ profile }: { profile: Profile }) {
                     <div className="font-medium text-sm text-white opacity-90 tracking-wide">Smart Rider</div>
                   </div>
                 </div>
-                <div className="h-12 w-12 rounded-xl bg-white text-primary grid place-items-center font-black text-xl shadow-lg">ST</div>
               </div>
 
               {/* QR Area */}

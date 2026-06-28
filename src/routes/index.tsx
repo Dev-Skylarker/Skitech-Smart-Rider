@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { QrCode, Smartphone, Wallet, ShieldCheck, Users, Zap, TrendingUp, Clock, CircleCheck as CheckCircle2, ArrowRight, MapPin, Phone, CreditCard, Truck, Star } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { useEffect } from "react";
+import logoImg from "@/assets/logo.png";
 
 export const Route = createFileRoute("/")({ component: Landing });
 
@@ -109,9 +110,14 @@ function Landing() {
                   </svg>
 
                   {/* Header */}
-                  <div className="relative flex items-start justify-between text-primary-foreground mb-4">
-                    <div className="text-3xl font-black tracking-tight">SCAN</div>
-                    <div className="h-12 w-12 rounded-lg bg-primary-foreground text-primary grid place-items-center font-black text-xl shadow-lg">ST</div>
+                  <div className="relative flex items-center justify-between text-primary-foreground mb-6">
+                    <div className="flex items-center gap-2">
+                      <img src={logoImg} alt="Logo" className="h-10 w-10 rounded-full object-cover shadow-sm bg-white" />
+                      <div className="leading-none">
+                        <div className="font-black tracking-tight text-xl text-black">Skitech</div>
+                        <div className="font-medium text-sm text-white opacity-90 tracking-wide">Smart Rider</div>
+                      </div>
+                    </div>
                   </div>
 
                   {/* QR Area */}
@@ -122,9 +128,9 @@ function Landing() {
                   </div>
 
                   {/* Tagline */}
-                  <div className="relative text-center text-primary-foreground">
-                    <div className="text-lg font-semibold">For rider profile</div>
-                    <div className="text-sm opacity-80 mt-1">Tap to pay</div>
+                  <div className="relative text-center text-primary-foreground mt-4 px-2">
+                    <div className="text-sm font-black uppercase tracking-wide mb-1">Scan for Rider Info</div>
+                    <div className="text-[11px] font-medium opacity-90 leading-snug">Save contact instantly, copy payment number, and pay faster!</div>
                   </div>
                 </div>
 
