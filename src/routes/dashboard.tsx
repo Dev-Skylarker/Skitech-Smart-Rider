@@ -279,9 +279,9 @@ function ActiveView({ profile }: { profile: Profile }) {
 
   return (
     <div className="animate-fade-in">
-      <div className="grid md:grid-cols-3 gap-6">
+      <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-start">
         {/* Profile card */}
-        <div className="md:col-span-2 rounded-2xl border bg-card p-6">
+        <div className="flex-1 w-full rounded-2xl border bg-card p-6">
           <div className="flex justify-between items-start mb-4">
             <div className="inline-flex items-center gap-1.5 rounded-full bg-accent/15 text-accent text-xs font-bold px-3 py-1.5 h-fit">
               <CheckCircle2 className="h-3.5 w-3.5" />
@@ -373,7 +373,7 @@ function ActiveView({ profile }: { profile: Profile }) {
         </div>
 
         {/* QR Code Section */}
-        <div className="flex flex-col items-center justify-center mt-6 mb-4">
+        <div className="w-full lg:w-auto flex-shrink-0 flex flex-col items-center lg:items-end justify-center lg:mt-0">
           <div className="relative">
             {/* Sticker container to be exported */}
             <div 
