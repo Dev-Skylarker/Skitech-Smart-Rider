@@ -355,23 +355,29 @@ function Landing() {
 
           <div className="max-w-md mx-auto">
             <div className="rounded-3xl border bg-card p-8 shadow-xl relative overflow-hidden">
-              <div className="absolute top-0 right-0 bg-primary text-primary-foreground text-xs font-bold px-4 py-2 rounded-bl-2xl">
-                POPULAR
+              <div className="absolute top-0 right-0 bg-primary text-primary-foreground text-xs font-black px-4 py-2 rounded-bl-2xl tracking-wide">
+                100 SK
               </div>
               <div className="text-center mb-6">
-                <h3 className="text-2xl font-bold mb-2">QR Sticker Package</h3>
+                <h3 className="text-2xl font-bold mb-2">Smart Rider Sticker</h3>
                 <div className="text-5xl font-black text-primary mb-2">KES 500</div>
-                <p className="text-muted-foreground">One-time payment</p>
+                <p className="text-muted-foreground">One-time payment · No monthly fees</p>
               </div>
 
               <ul className="space-y-4 mb-8">
                 {[
-                  "Weatherproof QR sticker",
-                  "Permanent profile page",
-                  "Unlimited updates",
+                  "Weatherproof QR sticker delivered to you",
+                  "Permanent public profile page",
+                  "Update your details anytime — no reprinting",
                   "Delivery anywhere in Kenya",
-                  "M-Pesa / Till / Paybill support",
+                  "M-Pesa / Send Money / Till / Paybill / Bank",
+                  "Multiple payment methods supported",
                   "Zero commission forever",
+                  "Save contact (vCard) button for customers",
+                  "QR code on your dashboard to share",
+                  "Edit payment info anytime from dashboard",
+                  "Verified rider badge",
+                  "Route & city display for customer trust",
                 ].map((feature, i) => (
                   <li key={i} className="flex items-start gap-3">
                     <CheckCircle2 className="h-5 w-5 text-primary shrink-0 mt-0.5" />

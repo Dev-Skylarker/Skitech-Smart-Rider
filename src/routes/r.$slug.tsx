@@ -1,12 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import {
   Copy, Phone, MessageCircle, Sparkles, MapPin,
   Check, ArrowRight, Share2, FileText, Flag, ShieldCheck,
-  AlertTriangle, Shield
+  AlertTriangle, Shield, ChevronDown, ChevronUp, Building2, Smartphone
 } from "lucide-react";
 import { toast } from "sonner";
 import { ReportRiderDialog } from "@/error-handling/dialogs";
@@ -52,6 +52,7 @@ function PublicQR() {
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState<string | null>(null);
   const [showReport, setShowReport] = useState(false);
+  const [showOtherMethods, setShowOtherMethods] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -182,16 +183,6 @@ function PublicQR() {
       </div>
 
       <div className="max-w-md mx-auto px-4 py-6">
-        {/* Persistent Light Mode Instruction Card */}
-        <div className="rounded-3xl shadow-lg border border-gray-200 overflow-hidden mb-6 bg-white text-black transition-transform active:scale-95" style={{ colorScheme: "light" }}>
-          <div className="p-6 flex flex-col items-center justify-center text-center bg-gradient-to-br from-white to-gray-50">
-            <div className="font-black text-4xl tracking-widest text-gray-900 mb-1 leading-none">SCAN</div>
-            <div className="font-black text-6xl text-primary mb-3 leading-none">ST</div>
-            <div className="font-bold text-xl text-gray-800 mb-1">For rider profile</div>
-            <div className="font-bold text-sm text-gray-500 uppercase tracking-widest">Tap to pay</div>
-          </div>
-        </div>
-
         {/* Main profile card */}
         <div className="rounded-3xl border bg-card shadow-2xl overflow-hidden mb-4">
           {/* Hero banner */}
@@ -263,38 +254,151 @@ function PublicQR() {
               </p>
             )}
 
-            {/* Primary payment CTA */}
-            {primaryPayment && (
-              <button
-                onClick={() => copyToClipboard(getPaymentDisplay(primaryPayment), primaryPayment.id)}
-                className="w-full mb-3 rounded-2xl bg-gradient-to-r from-primary to-secondary text-primary-foreground font-black py-4 px-4 text-center text-sm active:scale-95 transition-transform shadow-lg hover:shadow-xl flex items-center justify-center gap-2 high-contrast"
-              >
-                {copied === primaryPayment.id ? (
-                  <><Check className="h-5 w-5" /> Copied!</>
-                ) : (
-                  <><Copy className="h-5 w-5" /> Copy {methodTypeLabel(primaryPayment)}</>
-                )}
-              </button>
-            )}
+            {/* Preferred Payment Details */}
+            {methods.length > 0 && (
+              <div className="mb-4">
+                <div className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-3">Preferred Payment Details</div>
 
-            {/* Other payment methods */}
-            {methods.length > 1 && (
-              <div className="flex flex-col gap-2 mb-4">
-                {methods.slice(1).map((m) => (
-                  <button
-                    key={m.id}
-                    onClick={() => copyToClipboard(getPaymentDisplay(m), m.id)}
-                    className="w-full rounded-xl border border-border bg-background/70 p-3 hover:border-primary transition-all text-left text-sm active:bg-primary/5"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <div className="font-bold text-foreground text-xs">{methodTypeLabel(m)}{m.method_type !== "other" && m.label ? ` · ${m.label}` : ""}</div>
-                        <div className="text-xs font-mono text-muted-foreground mt-0.5">{getPaymentDisplay(m)}</div>
-                      </div>
-                      {copied === m.id ? <Check className="h-4 w-4 text-accent flex-shrink-0" /> : <Copy className="h-4 w-4 text-primary flex-shrink-0" />}
+                {primaryPayment && (
+                  <div className="rounded-2xl border border-primary/20 bg-primary/5 p-4 mb-3">
+                    {/* Method type label */}
+                    <div className="flex items-center gap-2 mb-3">
+                      {primaryPayment.method_type === "bank" ? (
+                        <Building2 className="h-4 w-4 text-primary" />
+                      ) : (
+                        <Smartphone className="h-4 w-4 text-primary" />
+                      )}
+                      <span className="text-xs font-bold text-primary uppercase tracking-wide">
+                        Preferred: {methodTypeLabel(primaryPayment)}
+                        {primaryPayment.label ? ` · ${primaryPayment.label}` : ""}
+                      </span>
                     </div>
-                  </button>
-                ))}
+
+                    {/* Send money / mobile money */}
+                    {primaryPayment.method_type !== "bank" && (
+                      <div className="mb-2">
+                        <div className="text-xs text-muted-foreground font-medium mb-0.5">
+                          {primaryPayment.method_type === "send_money" ? "Send Money Number" :
+                           primaryPayment.method_type === "till" ? "Till Number" :
+                           primaryPayment.method_type === "paybill" ? "Paybill Number" :
+                           primaryPayment.method_type === "pochi_la_biashara" ? "Pochi La Biashara" : "Number"}
+                        </div>
+                        <div className="flex items-center justify-between gap-3">
+                          <div>
+                            {(primaryPayment.account_name || riderName) && (
+                              <div className="font-bold text-foreground text-sm">
+                                {primaryPayment.account_name || riderName}
+                              </div>
+                            )}
+                            <div className="font-mono text-lg font-black text-foreground tracking-wider">
+                              {primaryPayment.method_type === "paybill"
+                                ? `${primaryPayment.paybill_number} · Acct: ${primaryPayment.account_number}`
+                                : primaryPayment.account_number || "N/A"}
+                            </div>
+                          </div>
+                          <button
+                            onClick={() => copyToClipboard(
+                              primaryPayment.method_type === "paybill"
+                                ? `${primaryPayment.paybill_number}`
+                                : primaryPayment.account_number || "",
+                              primaryPayment.id
+                            )}
+                            className="flex-shrink-0 rounded-xl bg-primary text-primary-foreground p-2.5 active:scale-95 transition-transform shadow-md"
+                            aria-label="Copy number"
+                          >
+                            {copied === primaryPayment.id
+                              ? <Check className="h-5 w-5" />
+                              : <Copy className="h-5 w-5" />}
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Bank account */}
+                    {primaryPayment.method_type === "bank" && (
+                      <div className="mb-2">
+                        <div className="text-xs text-muted-foreground font-medium mb-0.5">Bank Name · Account No.</div>
+                        <div className="flex items-center justify-between gap-3">
+                          <div>
+                            {primaryPayment.label && (
+                              <div className="font-bold text-foreground text-sm">{primaryPayment.label}</div>
+                            )}
+                            <div className="font-mono text-lg font-black text-foreground tracking-wider">
+                              {primaryPayment.account_number || "N/A"}
+                            </div>
+                            {primaryPayment.account_name && (
+                              <div className="text-xs text-muted-foreground">{primaryPayment.account_name}</div>
+                            )}
+                          </div>
+                          <button
+                            onClick={() => copyToClipboard(primaryPayment.account_number || "", primaryPayment.id)}
+                            className="flex-shrink-0 rounded-xl bg-primary text-primary-foreground p-2.5 active:scale-95 transition-transform shadow-md"
+                            aria-label="Copy account number"
+                          >
+                            {copied === primaryPayment.id
+                              ? <Check className="h-5 w-5" />
+                              : <Copy className="h-5 w-5" />}
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Other payment methods – collapsible */}
+                {methods.length > 1 && (
+                  <div className="mb-2">
+                    <button
+                      onClick={() => setShowOtherMethods((prev) => !prev)}
+                      className="w-full rounded-xl border border-border bg-background/70 py-2.5 px-4 text-sm font-bold text-foreground flex items-center justify-between active:bg-primary/5 transition-colors"
+                    >
+                      <span>See other payment methods</span>
+                      {showOtherMethods ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                    </button>
+
+                    {showOtherMethods && (
+                      <div className="mt-2 flex flex-col gap-2">
+                        {methods.slice(1).map((m) => (
+                          <div
+                            key={m.id}
+                            className="rounded-xl border border-border bg-background/70 p-3"
+                          >
+                            <div className="flex items-center gap-1.5 mb-1.5">
+                              {m.method_type === "bank"
+                                ? <Building2 className="h-3.5 w-3.5 text-primary" />
+                                : <Smartphone className="h-3.5 w-3.5 text-primary" />}
+                              <span className="text-xs font-bold text-primary uppercase tracking-wide">
+                                {methodTypeLabel(m)}{m.label ? ` · ${m.label}` : ""}
+                              </span>
+                            </div>
+                            <div className="flex items-center justify-between gap-2">
+                              <div>
+                                {m.account_name && (
+                                  <div className="text-sm font-bold text-foreground">{m.account_name}</div>
+                                )}
+                                <div className="font-mono text-base font-black text-foreground">
+                                  {m.method_type === "paybill"
+                                    ? `${m.paybill_number} · Acct: ${m.account_number}`
+                                    : m.account_number || "N/A"}
+                                </div>
+                              </div>
+                              <button
+                                onClick={() => copyToClipboard(
+                                  m.method_type === "paybill" ? `${m.paybill_number}` : m.account_number || "",
+                                  m.id
+                                )}
+                                className="flex-shrink-0 rounded-lg border border-primary/30 bg-primary/10 text-primary p-2 active:scale-95 transition-transform"
+                                aria-label="Copy number"
+                              >
+                                {copied === m.id ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             )}
 
@@ -336,13 +440,10 @@ function PublicQR() {
           </div>
         </div>
 
-        {/* Trust badges */}
+        {/* Trust badge */}
         <div className="flex flex-col gap-2 mb-6">
           <div className="rounded-xl border bg-card p-3 text-center text-xs text-muted-foreground">
             <span className="font-medium">Verified rider on Skitech Smart Rider</span>
-          </div>
-          <div className="rounded-xl border bg-card p-3 text-center text-xs text-muted-foreground">
-            <span className="font-medium">Payments go directly to rider · Zero commission</span>
           </div>
         </div>
 

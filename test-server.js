@@ -1,9 +1,10 @@
-import server from '../dist/server/server.js';
+import http from 'http';
+import server from './dist/server/server.js';
 
-export default async function (req, res) {
+const handler = async (req, res) => {
   try {
-    const protocol = req.headers['x-forwarded-proto'] || 'https';
-    const host = req.headers['x-forwarded-host'] || req.headers.host || 'localhost';
+    const protocol = req.headers['x-forwarded-proto'] || 'http';
+    const host = req.headers.host || 'localhost';
     const url = new URL(req.url, `${protocol}://${host}`);
     
     const headers = new Headers();
@@ -23,16 +24,8 @@ export default async function (req, res) {
     };
 
     if (req.method !== 'GET' && req.method !== 'HEAD') {
-      // In a real Vercel Node.js function, req is an IncomingMessage, but Vercel also pre-parses bodies sometimes.
-      // If Vercel pre-parsed the body, req.body might exist. Otherwise we need to read from the stream.
-      // For simple SSR, we can usually just pass the req stream if it's not pre-parsed.
-      if (req.body) {
-        init.body = typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
-      } else {
-        // We can use a readable stream, or wait for Vercel's stream. 
-        // But for SSR, GET is the main thing. We'll fallback to null for unknown streams to avoid hangs.
-        init.body = null;
-      }
+      // Very basic body parsing for testing
+      init.body = null; 
     }
 
     const webRequest = new Request(url, init);
@@ -44,19 +37,34 @@ export default async function (req, res) {
     });
     
     if (webResponse.body) {
+      // Not a real ReadableStream but enough for a quick test
       const reader = webResponse.body.getReader();
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-        if (value) {
-          res.write(value);
-        }
+        res.write(value);
       }
     }
     res.end();
   } catch (err) {
-    console.error('SSR Error:', err);
+    console.error(err);
     res.statusCode = 500;
-    res.end('Internal Server Error');
+    res.end('Error');
   }
-}
+};
+
+const s = http.createServer(handler);
+s.listen(3000, () => {
+  console.log('Listening on 3000');
+  
+  // Make a test request
+  http.get('http://localhost:3000/', (res) => {
+    console.log(`Status: ${res.statusCode}`);
+    let data = '';
+    res.on('data', chunk => data += chunk);
+    res.on('end', () => {
+      console.log('Response body:', data.slice(0, 100) + '...');
+      process.exit(0);
+    });
+  });
+});
