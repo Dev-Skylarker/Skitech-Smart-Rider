@@ -593,9 +593,18 @@ function CreateProfile() {
           <div className="space-y-4">
             {/* Profile summary */}
             <div className="rounded-2xl border bg-card p-6">
-              <h2 className="font-bold mb-4 text-foreground">Profile Details</h2>
+              <div className="flex items-center gap-4 mb-4">
+                {data.photo_url ? (
+                  <img src={data.photo_url} alt="Profile preview" className="w-16 h-16 rounded-full object-cover border-2 border-primary/20" />
+                ) : (
+                  <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center text-muted-foreground border-2 border-transparent">
+                    <span className="text-xs">No photo</span>
+                  </div>
+                )}
+                <h2 className="font-bold text-foreground">Profile Details</h2>
+              </div>
               <dl className="grid sm:grid-cols-2 gap-3 text-sm">
-                <Field k="Full name" v={data.full_name} />
+                <Field k="Full name" v={`${data.first_name} ${data.surname}`} />
                 <Field k="Display name" v={data.display_name || "—"} />
                 <Field k="Phone" v={data.phone} />
                 <Field k="City" v={data.city} />
