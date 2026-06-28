@@ -23,7 +23,7 @@ import {
   Download,
 } from "lucide-react";
 import { toast } from "sonner";
-import html2canvas from "html2canvas";
+import { toPng } from "html-to-image";
 import logoImg from "@/assets/logo.png";
 
 type Profile = {
@@ -350,44 +350,36 @@ function ActiveView({ profile }: { profile: Profile }) {
           {/* Sticker container to be exported */}
           <div 
             id="qr-sticker-container"
-            className="relative w-[320px] aspect-square rounded-3xl p-6 overflow-hidden"
-            style={{ 
-              background: "linear-gradient(to bottom right, #ef4444, #ea580c)",
-              color: "#ffffff",
-              boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)"
-            }}
+            className="relative w-[320px] aspect-square rounded-3xl bg-gradient-to-br from-primary to-primary/90 p-6 shadow-2xl"
           >
             {/* Decorative waves */}
-            <svg className="absolute inset-0 w-full h-full opacity-90" viewBox="0 0 380 380" preserveAspectRatio="none">
-              <path d="M0,280 C120,220 240,320 380,250 L380,380 L0,380 Z" fill="#d946ef" />
-              <path d="M0,310 C130,260 260,330 380,290 L380,380 L0,380 Z" fill="#d946ef" opacity="0.7" />
+            <svg className="absolute inset-0 w-full h-full opacity-90 rounded-3xl overflow-hidden" viewBox="0 0 380 380" preserveAspectRatio="none">
+              <path d="M0,280 C120,220 240,320 380,250 L380,380 L0,380 Z" fill="var(--secondary)" />
+              <path d="M0,310 C130,260 260,330 380,290 L380,380 L0,380 Z" fill="var(--secondary)" opacity="0.7" />
             </svg>
 
-            {/* Header / Logo */}
-            <div className="relative flex items-center justify-between mb-4">
+            {/* Header */}
+            <div className="relative flex items-start justify-between text-primary-foreground mb-4">
               <div className="flex items-center gap-2">
-                <img src={logoImg} alt="Logo" className="h-8 w-8 rounded-full" style={{ backgroundColor: "#ffffff" }} />
-                <div className="font-black tracking-tight leading-none text-lg" style={{ color: "#ffffff" }}>
+                <img src={logoImg} alt="Logo" className="h-8 w-8 rounded-full" />
+                <div className="font-black text-xl tracking-tight leading-none text-white">
                   Skitech
                   <span className="block text-sm opacity-90">Smart Rider</span>
                 </div>
               </div>
-              <div 
-                className="h-10 w-10 rounded-lg grid place-items-center font-black text-lg"
-                style={{ backgroundColor: "#ffffff", color: "#ef4444", boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)" }}
-              >
+              <div className="h-12 w-12 rounded-lg bg-primary-foreground text-primary grid place-items-center font-black text-xl shadow-lg">
                 ST
               </div>
             </div>
 
             {/* QR Area */}
-            <div className="relative rounded-2xl p-4 mb-4" style={{ backgroundColor: "#ffffff", boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)" }}>
-              <div className="aspect-square w-full rounded-lg grid place-items-center overflow-hidden" style={{ backgroundColor: "#f5f5f5" }}>
+            <div className="relative rounded-2xl bg-white p-4 shadow-lg mb-4">
+              <div className="aspect-square w-full rounded-lg bg-gradient-to-br from-muted/50 to-muted grid place-items-center p-2">
                 <QRCodeSVG
                   value={url}
                   size={200}
-                  bgColor="#f5f5f5"
-                  fgColor="#431407"
+                  bgColor="transparent"
+                  fgColor="#000000"
                   level="H"
                   style={{ width: "100%", height: "100%" }}
                 />
@@ -395,9 +387,9 @@ function ActiveView({ profile }: { profile: Profile }) {
             </div>
 
             {/* Tagline */}
-            <div className="relative text-center" style={{ color: "#ffffff" }}>
-              <div className="text-lg font-bold">For rider profile</div>
-              <div className="text-sm font-medium opacity-90 mt-0.5">Tap to pay</div>
+            <div className="relative text-center text-primary-foreground">
+              <div className="text-lg font-semibold">For rider profile</div>
+              <div className="text-sm opacity-80 mt-1">Tap to pay</div>
             </div>
           </div>
 
@@ -408,13 +400,12 @@ function ActiveView({ profile }: { profile: Profile }) {
               const el = document.getElementById("qr-sticker-container");
               if (!el) return;
               try {
-                const canvas = await html2canvas(el, {
-                  scale: 3, // High resolution
-                  backgroundColor: null, // Keep border radius transparency if possible
+                const dataUrl = await toPng(el, {
+                  cacheBust: true,
+                  pixelRatio: 3,
                 });
-                const imgData = canvas.toDataURL("image/png");
                 const a = document.createElement("a");
-                a.href = imgData;
+                a.href = dataUrl;
                 a.download = `smart-rider-qr-${profile.display_name || "sticker"}.png`;
                 a.click();
                 toast.success("QR sticker downloaded!");
