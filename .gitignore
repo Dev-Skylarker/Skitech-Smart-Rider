@@ -46,3 +46,4 @@ QUICK_START.md
 .env.*
 !.env.example
 
+.vercel
