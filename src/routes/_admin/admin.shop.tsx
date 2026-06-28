@@ -94,7 +94,7 @@ function AdminShop() {
     const path = `shop/${crypto.randomUUID()}.${ext}`;
 
     const { data, error } = await supabase.storage
-      .from("shop-images")
+      .from("shop_images")
       .upload(path, file, { contentType: file.type, upsert: false });
 
     if (error) {
@@ -105,9 +105,9 @@ function AdminShop() {
       } else {
         setForm((f) => ({ ...f, gallery_images: [...f.gallery_images, objectUrl] }));
       }
-      toast.warning("Storage bucket not configured — using local preview. Add a 'shop-images' bucket in Supabase Storage for production use.");
+      toast.warning("Storage bucket not configured — using local preview. Add a 'shop_images' bucket in Supabase Storage for production use.");
     } else {
-      const { data: urlData } = supabase.storage.from("shop-images").getPublicUrl(path);
+      const { data: urlData } = supabase.storage.from("shop_images").getPublicUrl(path);
       const url = urlData.publicUrl;
       if (target === "cover") {
         setForm((f) => ({ ...f, cover_image: url }));
