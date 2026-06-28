@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/lib/auth";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -46,6 +47,7 @@ function statusBadge(s: string) {
 }
 
 function AdminUsers() {
+  const { user } = useAuth();
   const [rows, setRows] = useState<Row[]>([]);
   const [count, setCount] = useState(0);
   const [page, setPage] = useState(0);
@@ -319,44 +321,49 @@ function AdminUsers() {
                 <p className="text-xs text-muted-foreground text-center">Drag to adjust score (-5 to 5). Saves automatically.</p>
               </div>
 
-              {/* Action Buttons */}
-              <div className="space-y-2">
-                <Button variant="outline" className="w-full justify-start gap-3 h-12" onClick={() => setPopupMode("edit")}>
-                  <Pencil className="h-5 w-5 text-muted-foreground" />
-                  Edit User Information
-                </Button>
-
-                <Button variant="outline" className="w-full justify-start gap-3 h-12" onClick={handleResetPassword} disabled={saving || !editData.email}>
-                  <KeyRound className="h-5 w-5 text-muted-foreground" />
-                  Send Password Reset Email
-                </Button>
-                
-                {editData.status !== "suspended" && (
-                  <Button variant="outline" className="w-full justify-start gap-3 h-12 hover:bg-destructive/10 hover:text-destructive" onClick={() => handleStatusChange("suspended")} disabled={saving}>
-                    <UserMinus className="h-5 w-5" />
-                    Suspend User
+              {editData.id === user?.id ? (
+                <div className="bg-primary/5 text-primary p-4 rounded-xl border border-primary/20 text-center">
+                  <p className="text-sm font-medium">To manage your own account, please use the Account Settings tab.</p>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <Button variant="outline" className="w-full justify-start gap-3 h-12" onClick={() => setPopupMode("edit")}>
+                    <Pencil className="h-5 w-5 text-muted-foreground" />
+                    Edit User Information
                   </Button>
-                )}
 
-                {editData.status !== "banned" && (
-                  <Button variant="outline" className="w-full justify-start gap-3 h-12 hover:bg-destructive/10 hover:text-destructive" onClick={() => handleStatusChange("banned")} disabled={saving}>
-                    <Ban className="h-5 w-5" />
-                    Ban User
+                  <Button variant="outline" className="w-full justify-start gap-3 h-12" onClick={handleResetPassword} disabled={saving || !editData.email}>
+                    <KeyRound className="h-5 w-5 text-muted-foreground" />
+                    Send Password Reset Email
                   </Button>
-                )}
+                  
+                  {editData.status !== "suspended" && (
+                    <Button variant="outline" className="w-full justify-start gap-3 h-12 hover:bg-destructive/10 hover:text-destructive" onClick={() => handleStatusChange("suspended")} disabled={saving}>
+                      <UserMinus className="h-5 w-5" />
+                      Suspend User
+                    </Button>
+                  )}
 
-                {(editData.status === "suspended" || editData.status === "banned") && (
-                  <Button variant="outline" className="w-full justify-start gap-3 h-12 text-primary" onClick={() => handleStatusChange("active")} disabled={saving}>
-                    <Badge variant="outline" className="bg-primary/10 border-transparent text-primary">Restore</Badge>
-                    Restore User to Active
+                  {editData.status !== "banned" && (
+                    <Button variant="outline" className="w-full justify-start gap-3 h-12 hover:bg-destructive/10 hover:text-destructive" onClick={() => handleStatusChange("banned")} disabled={saving}>
+                      <Ban className="h-5 w-5" />
+                      Ban User
+                    </Button>
+                  )}
+
+                  {(editData.status === "suspended" || editData.status === "banned") && (
+                    <Button variant="outline" className="w-full justify-start gap-3 h-12 text-primary" onClick={() => handleStatusChange("active")} disabled={saving}>
+                      <Badge variant="outline" className="bg-primary/10 border-transparent text-primary">Restore</Badge>
+                      Restore User to Active
+                    </Button>
+                  )}
+
+                  <Button variant="outline" className="w-full justify-start gap-3 h-12 border-destructive/20 text-destructive hover:bg-destructive hover:text-destructive-foreground mt-4" onClick={handleDeleteUser} disabled={saving}>
+                    <UserX className="h-5 w-5" />
+                    Delete Account Permanently
                   </Button>
-                )}
-
-                <Button variant="outline" className="w-full justify-start gap-3 h-12 border-destructive/20 text-destructive hover:bg-destructive hover:text-destructive-foreground mt-4" onClick={handleDeleteUser} disabled={saving}>
-                  <UserX className="h-5 w-5" />
-                  Delete Account Permanently
-                </Button>
-              </div>
+                </div>
+              )}
             </div>
           ) : (
             /* EDIT MODE */

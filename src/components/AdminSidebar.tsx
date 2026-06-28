@@ -15,7 +15,7 @@ import logoImg from "@/assets/logo.png";
 
 const items = [
   { title: "Overview", url: "/admin", icon: LayoutDashboard },
-  { title: "Riders", url: "/admin/riders", icon: Users },
+  { title: "Users", url: "/admin/riders", icon: Users },
   { title: "Orders", url: "/admin/orders", icon: Package },
   { title: "Shop", url: "/admin/shop", icon: ShoppingBag },
   { title: "Roles", url: "/admin/roles", icon: Shield },
@@ -66,7 +66,7 @@ export function AdminSidebar() {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <Link to="/account" className="flex items-center gap-2">
+                  <Link to="/admin/account" className="flex items-center gap-2">
                     <User className="h-4 w-4" />
                     <span>Account Settings</span>
                   </Link>

@@ -70,7 +70,7 @@ function AdminLayout() {
               >
                 {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
               </Button>
-              <Link to="/account">
+              <Link to="/admin/account">
                 <Button
                   variant="outline"
                   size="sm"

@@ -64,14 +64,6 @@ export function SiteHeader() {
           <div className="hidden md:flex items-center gap-2">
             {user ? (
               <>
-                {isAdmin && (
-                  <Link to="/admin">
-                    <Button variant="ghost" size="sm" className="gap-1.5">
-                      <Shield className="h-3.5 w-3.5" />
-                      Admin
-                    </Button>
-                  </Link>
-                )}
                 <Link to="/dashboard">
                   <Button variant="ghost" size="sm" className="gap-1.5">
                     <LayoutDashboard className="h-3.5 w-3.5" />
@@ -119,7 +111,6 @@ export function SiteHeader() {
                   {user ? (
                     <>
                       <MobileLink to="/dashboard" onClick={() => setOpen(false)} icon={<LayoutDashboard className="h-4 w-4" />}>Dashboard</MobileLink>
-                      {isAdmin && <MobileLink to="/admin" onClick={() => setOpen(false)} icon={<Shield className="h-4 w-4" />} className="text-primary">Admin Panel</MobileLink>}
                       <MobileLink to="/shop" onClick={() => setOpen(false)} icon={<ShoppingCart className="h-4 w-4" />}>Shop</MobileLink>
                       <MobileLink to="/account" onClick={() => setOpen(false)} icon={<User className="h-4 w-4" />}>Account Settings</MobileLink>
                       <div className="border-t pt-2 mt-2">
