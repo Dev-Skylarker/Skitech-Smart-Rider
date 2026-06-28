@@ -350,42 +350,58 @@ function ActiveView({ profile }: { profile: Profile }) {
           {/* Sticker container to be exported */}
           <div 
             id="qr-sticker-container"
-            className="rounded-3xl bg-white p-6 shadow-2xl flex flex-col items-center gap-4 text-black relative w-[280px]"
-            style={{ colorScheme: "light" }}
+            className="relative w-[320px] aspect-square rounded-3xl p-6 shadow-2xl overflow-hidden"
+            style={{ 
+              background: "linear-gradient(to bottom right, #ef4444, #ea580c)",
+              color: "#ffffff"
+            }}
           >
+            {/* Decorative waves */}
+            <svg className="absolute inset-0 w-full h-full opacity-90" viewBox="0 0 380 380" preserveAspectRatio="none">
+              <path d="M0,280 C120,220 240,320 380,250 L380,380 L0,380 Z" fill="#d946ef" />
+              <path d="M0,310 C130,260 260,330 380,290 L380,380 L0,380 Z" fill="#d946ef" opacity="0.7" />
+            </svg>
+
             {/* Header / Logo */}
-            <div className="flex items-center gap-2 w-full justify-center">
-              <img src={logoImg} alt="Logo" className="h-8 w-8 rounded-full" />
-              <div className="font-black text-xl tracking-tight leading-none text-gray-900">
-                Skitech
-                <span className="text-primary block text-sm">Smart Rider</span>
+            <div className="relative flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <img src={logoImg} alt="Logo" className="h-8 w-8 rounded-full shadow-sm" style={{ backgroundColor: "#ffffff" }} />
+                <div className="font-black tracking-tight leading-none text-white text-lg drop-shadow-md">
+                  Skitech
+                  <span className="block text-sm opacity-90">Smart Rider</span>
+                </div>
+              </div>
+              <div 
+                className="h-10 w-10 rounded-lg grid place-items-center font-black text-lg shadow-lg"
+                style={{ backgroundColor: "#ffffff", color: "#ef4444" }}
+              >
+                ST
               </div>
             </div>
 
-            {/* QR Code */}
-            <div className="rounded-xl border-4 border-gray-100 p-2 bg-white">
-              <QRCodeSVG
-                value={url}
-                size={160}
-                bgColor="white"
-                fgColor="#000000"
-                level="H"
-              />
+            {/* QR Area */}
+            <div className="relative rounded-2xl p-4 shadow-lg mb-4" style={{ backgroundColor: "#ffffff" }}>
+              <div className="aspect-square w-full rounded-lg grid place-items-center overflow-hidden" style={{ backgroundColor: "#f5f5f5" }}>
+                <QRCodeSVG
+                  value={url}
+                  size={200}
+                  bgColor="#f5f5f5"
+                  fgColor="#431407"
+                  level="H"
+                  style={{ width: "100%", height: "100%" }}
+                />
+              </div>
             </div>
 
-            {/* Marketing Message */}
-            <div className="text-center w-full px-2">
-              <div className="font-black text-sm uppercase tracking-wide text-gray-900 mb-1">
-                Scan for Rider Info
-              </div>
-              <p className="text-[10px] text-gray-600 font-medium leading-snug">
-                Save contact instantly, copy payment number, and pay faster!
-              </p>
+            {/* Tagline */}
+            <div className="relative text-center text-white drop-shadow-md">
+              <div className="text-lg font-bold">For rider profile</div>
+              <div className="text-sm font-medium opacity-90 mt-0.5">Tap to pay</div>
             </div>
           </div>
 
           <Button
-            className="mt-6 gap-2 font-bold w-[280px]"
+            className="mt-6 gap-2 font-bold w-[320px]"
             variant="secondary"
             onClick={async () => {
               const el = document.getElementById("qr-sticker-container");
@@ -393,7 +409,7 @@ function ActiveView({ profile }: { profile: Profile }) {
               try {
                 const canvas = await html2canvas(el, {
                   scale: 3, // High resolution
-                  backgroundColor: "#ffffff",
+                  backgroundColor: null, // Keep border radius transparency if possible
                 });
                 const imgData = canvas.toDataURL("image/png");
                 const a = document.createElement("a");
