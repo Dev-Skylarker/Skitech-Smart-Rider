@@ -510,3 +510,28 @@ BEGIN
   RETURN TRUE;
 END;
 $$;
+
+-- Function to securely delete one's own user account from the client
+CREATE OR REPLACE FUNCTION public.delete_own_account()
+RETURNS BOOLEAN
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+DECLARE
+  target_user_id UUID;
+BEGIN
+  target_user_id := auth.uid();
+  
+  IF target_user_id IS NULL THEN
+    RAISE EXCEPTION 'Unauthorized';
+  END IF;
+
+  -- Clean up storage objects owned by the user to prevent FK constraint violations
+  DELETE FROM storage.objects WHERE owner = target_user_id;
+
+  -- Delete the user from auth.users (cascades to public.profiles)
+  DELETE FROM auth.users WHERE id = target_user_id;
+  
+  RETURN TRUE;
+END;
+$$;

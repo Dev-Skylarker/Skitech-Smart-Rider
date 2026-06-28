@@ -5,7 +5,7 @@ import { useIsAdmin } from "@/hooks/use-is-admin";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AdminSidebar } from "@/components/AdminSidebar";
 import { Button } from "@/components/ui/button";
-import { LogOut, Moon, Sun } from "lucide-react";
+import { LogOut, Moon, Sun, User } from "lucide-react";
 import { useTheme } from "@/lib/theme";
 import logoImg from "@/assets/logo.png";
 
@@ -70,6 +70,16 @@ function AdminLayout() {
               >
                 {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
               </Button>
+              <Link to="/account">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="gap-1.5"
+                >
+                  <User className="h-3.5 w-3.5" />
+                  Account
+                </Button>
+              </Link>
               <Button
                 variant="outline"
                 size="sm"

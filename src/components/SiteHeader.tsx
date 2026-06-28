@@ -3,7 +3,7 @@ import { useAuth } from "@/lib/auth";
 import { useIsAdmin } from "@/hooks/use-is-admin";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, Moon, Sun, ShoppingCart, LayoutDashboard, LogOut, Shield } from "lucide-react";
+import { Menu, Moon, Sun, ShoppingCart, LayoutDashboard, LogOut, Shield, User } from "lucide-react";
 import { useState } from "react";
 import { useTheme } from "@/lib/theme";
 import logoImg from "@/assets/logo.png";
@@ -78,6 +78,12 @@ export function SiteHeader() {
                     Dashboard
                   </Button>
                 </Link>
+                <Link to="/account">
+                  <Button variant="ghost" size="sm" className="gap-1.5">
+                    <User className="h-3.5 w-3.5" />
+                    Account
+                  </Button>
+                </Link>
                 <Button variant="outline" size="sm" className="gap-1.5" onClick={signOut}>
                   <LogOut className="h-3.5 w-3.5" />
                   Sign out
@@ -115,6 +121,7 @@ export function SiteHeader() {
                       <MobileLink to="/dashboard" onClick={() => setOpen(false)} icon={<LayoutDashboard className="h-4 w-4" />}>Dashboard</MobileLink>
                       {isAdmin && <MobileLink to="/admin" onClick={() => setOpen(false)} icon={<Shield className="h-4 w-4" />} className="text-primary">Admin Panel</MobileLink>}
                       <MobileLink to="/shop" onClick={() => setOpen(false)} icon={<ShoppingCart className="h-4 w-4" />}>Shop</MobileLink>
+                      <MobileLink to="/account" onClick={() => setOpen(false)} icon={<User className="h-4 w-4" />}>Account Settings</MobileLink>
                       <div className="border-t pt-2 mt-2">
                         <button
                           onClick={() => { setOpen(false); signOut(); }}

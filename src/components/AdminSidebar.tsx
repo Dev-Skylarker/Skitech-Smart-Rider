@@ -10,7 +10,7 @@ import {
   SidebarMenuItem,
   SidebarHeader,
 } from "@/components/ui/sidebar";
-import { LayoutDashboard, Users, Package, Shield, Home, ShoppingBag, Flag } from "lucide-react";
+import { LayoutDashboard, Users, Package, Shield, Home, ShoppingBag, Flag, User } from "lucide-react";
 import logoImg from "@/assets/logo.png";
 
 const items = [
@@ -64,6 +64,14 @@ export function AdminSidebar() {
           <SidebarGroupLabel>Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link to="/account" className="flex items-center gap-2">
+                    <User className="h-4 w-4" />
+                    <span>Account Settings</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
                   <Link to="/dashboard" className="flex items-center gap-2">
