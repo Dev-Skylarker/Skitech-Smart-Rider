@@ -12,7 +12,7 @@ import { Trash2, ShieldPlus } from "lucide-react";
 
 export const Route = createFileRoute("/_admin/admin/roles")({ component: AdminRoles });
 
-type Row = { id: string; user_id: string; role: string; created_at: string; email: string | null };
+type Row = { user_id: string; email: string; isAdmin: boolean; adminRoleId: string | null; created_at: string };
 
 function AdminRoles() {
   const [rows, setRows] = useState<Row[]>([]);
@@ -24,14 +24,20 @@ function AdminRoles() {
   async function list() {
     const { data: roles } = await supabase.from("user_roles").select("*");
     const { data: profiles } = await supabase.from("profiles").select("id, email");
-    return (roles ?? []).map((r: any) => {
-      const p = (profiles ?? []).find((prof: any) => prof.id === r.user_id);
+    
+    const uniqueUserIds = Array.from(new Set((roles ?? []).map((r: any) => r.user_id)));
+    
+    return uniqueUserIds.map((uid: any) => {
+      const userRoles = (roles ?? []).filter((r: any) => r.user_id === uid);
+      const p = (profiles ?? []).find((prof: any) => prof.id === uid);
+      const adminRole = userRoles.find((r: any) => r.role === "admin");
+      
       return {
-        id: r.id,
-        user_id: r.user_id,
-        role: r.role,
-        created_at: r.created_at,
-        email: p?.email ?? "rider@smartrider.co.ke"
+        user_id: uid,
+        email: p?.email ?? "rider@smartrider.co.ke",
+        isAdmin: !!adminRole,
+        adminRoleId: adminRole?.id ?? null,
+        created_at: userRoles[0].created_at
       };
     });
   }
@@ -141,12 +147,27 @@ function AdminRoles() {
             ) : rows.length === 0 ? (
               <TableRow><TableCell colSpan={4} className="text-center text-muted-foreground py-8">No roles assigned</TableCell></TableRow>
             ) : rows.map((r) => (
-              <TableRow key={r.id}>
+              <TableRow key={r.user_id}>
                 <TableCell>{r.email ?? <span className="text-muted-foreground">{r.user_id}</span>}</TableCell>
-                <TableCell><Badge variant={r.role === "admin" ? "default" : "secondary"}>{r.role}</Badge></TableCell>
+                <TableCell><Badge variant={r.isAdmin ? "default" : "secondary"}>{r.isAdmin ? "admin" : "user"}</Badge></TableCell>
                 <TableCell className="text-xs text-muted-foreground">{new Date(r.created_at).toLocaleDateString()}</TableCell>
                 <TableCell className="text-right">
-                  <Button size="sm" variant="ghost" onClick={() => onRevoke(r.id)}><Trash2 className="h-4 w-4" /></Button>
+                  {r.isAdmin ? (
+                    <Button size="sm" variant="ghost" className="text-destructive hover:text-destructive" onClick={() => onRevoke(r.adminRoleId!)}>Revoke</Button>
+                  ) : (
+                    <Button size="sm" variant="outline" onClick={async () => {
+                      setBusy(true);
+                      try {
+                        await grant(r.email, "admin");
+                        toast.success("Promoted to Admin");
+                        load();
+                      } catch (e: any) {
+                        toast.error(e.message);
+                      } finally {
+                        setBusy(false);
+                      }
+                    }}>Promote</Button>
+                  )}
                 </TableCell>
               </TableRow>
             ))}
