@@ -30,7 +30,6 @@ import { Route as AdminAdminShopRouteImport } from './routes/_admin/admin.shop'
 import { Route as AdminAdminRolesRouteImport } from './routes/_admin/admin.roles'
 import { Route as AdminAdminRidersRouteImport } from './routes/_admin/admin.riders'
 import { Route as AdminAdminOrdersRouteImport } from './routes/_admin/admin.orders'
-import { Route as AdminAdminRidersIdRouteImport } from './routes/_admin/admin.riders.$id'
 
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
@@ -136,11 +135,6 @@ const AdminAdminOrdersRoute = AdminAdminOrdersRouteImport.update({
   path: '/admin/orders',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminAdminRidersIdRoute = AdminAdminRidersIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => AdminAdminRidersRoute,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -159,11 +153,10 @@ export interface FileRoutesByFullPath {
   '/profile/create': typeof ProfileCreateRoute
   '/r/$slug': typeof RSlugRoute
   '/admin/orders': typeof AdminAdminOrdersRoute
-  '/admin/riders': typeof AdminAdminRidersRouteWithChildren
+  '/admin/riders': typeof AdminAdminRidersRoute
   '/admin/roles': typeof AdminAdminRolesRoute
   '/admin/shop': typeof AdminAdminShopRoute
   '/admin/': typeof AdminAdminIndexRoute
-  '/admin/riders/$id': typeof AdminAdminRidersIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -182,11 +175,10 @@ export interface FileRoutesByTo {
   '/profile/create': typeof ProfileCreateRoute
   '/r/$slug': typeof RSlugRoute
   '/admin/orders': typeof AdminAdminOrdersRoute
-  '/admin/riders': typeof AdminAdminRidersRouteWithChildren
+  '/admin/riders': typeof AdminAdminRidersRoute
   '/admin/roles': typeof AdminAdminRolesRoute
   '/admin/shop': typeof AdminAdminShopRoute
   '/admin': typeof AdminAdminIndexRoute
-  '/admin/riders/$id': typeof AdminAdminRidersIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -207,11 +199,10 @@ export interface FileRoutesById {
   '/profile/create': typeof ProfileCreateRoute
   '/r/$slug': typeof RSlugRoute
   '/_admin/admin/orders': typeof AdminAdminOrdersRoute
-  '/_admin/admin/riders': typeof AdminAdminRidersRouteWithChildren
+  '/_admin/admin/riders': typeof AdminAdminRidersRoute
   '/_admin/admin/roles': typeof AdminAdminRolesRoute
   '/_admin/admin/shop': typeof AdminAdminShopRoute
   '/_admin/admin/': typeof AdminAdminIndexRoute
-  '/_admin/admin/riders/$id': typeof AdminAdminRidersIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -236,7 +227,6 @@ export interface FileRouteTypes {
     | '/admin/roles'
     | '/admin/shop'
     | '/admin/'
-    | '/admin/riders/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -259,7 +249,6 @@ export interface FileRouteTypes {
     | '/admin/roles'
     | '/admin/shop'
     | '/admin'
-    | '/admin/riders/$id'
   id:
     | '__root__'
     | '/'
@@ -283,7 +272,6 @@ export interface FileRouteTypes {
     | '/_admin/admin/roles'
     | '/_admin/admin/shop'
     | '/_admin/admin/'
-    | '/_admin/admin/riders/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -454,30 +442,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAdminOrdersRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/_admin/admin/riders/$id': {
-      id: '/_admin/admin/riders/$id'
-      path: '/$id'
-      fullPath: '/admin/riders/$id'
-      preLoaderRoute: typeof AdminAdminRidersIdRouteImport
-      parentRoute: typeof AdminAdminRidersRoute
-    }
   }
 }
 
-interface AdminAdminRidersRouteChildren {
-  AdminAdminRidersIdRoute: typeof AdminAdminRidersIdRoute
-}
-
-const AdminAdminRidersRouteChildren: AdminAdminRidersRouteChildren = {
-  AdminAdminRidersIdRoute: AdminAdminRidersIdRoute,
-}
-
-const AdminAdminRidersRouteWithChildren =
-  AdminAdminRidersRoute._addFileChildren(AdminAdminRidersRouteChildren)
-
 interface AdminRouteChildren {
   AdminAdminOrdersRoute: typeof AdminAdminOrdersRoute
-  AdminAdminRidersRoute: typeof AdminAdminRidersRouteWithChildren
+  AdminAdminRidersRoute: typeof AdminAdminRidersRoute
   AdminAdminRolesRoute: typeof AdminAdminRolesRoute
   AdminAdminShopRoute: typeof AdminAdminShopRoute
   AdminAdminIndexRoute: typeof AdminAdminIndexRoute
@@ -485,7 +455,7 @@ interface AdminRouteChildren {
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminAdminOrdersRoute: AdminAdminOrdersRoute,
-  AdminAdminRidersRoute: AdminAdminRidersRouteWithChildren,
+  AdminAdminRidersRoute: AdminAdminRidersRoute,
   AdminAdminRolesRoute: AdminAdminRolesRoute,
   AdminAdminShopRoute: AdminAdminShopRoute,
   AdminAdminIndexRoute: AdminAdminIndexRoute,
