@@ -54,7 +54,7 @@ function Login() {
         .from("user_roles")
         .select("role")
         .eq("user_id", data.user.id)
-        .single();
+        .maybeSingle();
         
       if (roleData?.role === "admin") {
         nav({ to: redirect || "/admin" });
