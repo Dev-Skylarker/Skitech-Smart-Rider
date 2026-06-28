@@ -51,6 +51,9 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   UNIQUE (qr_slug)
 );
 
+-- Ensure email column exists if the table was created before the email column was added
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS email TEXT;
+
 -- ============================================================
 -- PAYMENT METHODS TABLE
 -- ============================================================
