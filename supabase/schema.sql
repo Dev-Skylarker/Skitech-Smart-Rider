@@ -10,7 +10,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 -- ENUMS
 -- ============================================================
 DO $$ BEGIN
-  CREATE TYPE app_role AS ENUM ('admin', 'support', 'user');
+  CREATE TYPE app_role AS ENUM ('admin', 'user');
 EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 
 DO $$ BEGIN
@@ -435,7 +435,36 @@ CREATE POLICY "Anyone can upload an avatar."
   ON storage.objects FOR INSERT
   WITH CHECK (bucket_id = 'avatars');
 
+-- Users can update their own avatars.
 DROP POLICY IF EXISTS "Users can update their own avatars." ON storage.objects;
 CREATE POLICY "Users can update their own avatars."
   ON storage.objects FOR UPDATE
   USING (bucket_id = 'avatars');
+
+-- ============================================================
+-- STORAGE SETUP (Shop Images)
+-- ============================================================
+INSERT INTO storage.buckets (id, name, public) 
+VALUES ('shop_images', 'shop_images', true) 
+ON CONFLICT (id) DO NOTHING;
+
+-- Storage Policies for 'shop_images'
+DROP POLICY IF EXISTS "Shop images are publicly accessible." ON storage.objects;
+CREATE POLICY "Shop images are publicly accessible."
+  ON storage.objects FOR SELECT
+  USING (bucket_id = 'shop_images');
+
+DROP POLICY IF EXISTS "Staff can upload shop images." ON storage.objects;
+CREATE POLICY "Staff can upload shop images."
+  ON storage.objects FOR INSERT
+  WITH CHECK (bucket_id = 'shop_images' AND public.is_staff(auth.uid()));
+
+DROP POLICY IF EXISTS "Staff can update shop images." ON storage.objects;
+CREATE POLICY "Staff can update shop images."
+  ON storage.objects FOR UPDATE
+  USING (bucket_id = 'shop_images' AND public.is_staff(auth.uid()));
+
+DROP POLICY IF EXISTS "Staff can delete shop images." ON storage.objects;
+CREATE POLICY "Staff can delete shop images."
+  ON storage.objects FOR DELETE
+  USING (bucket_id = 'shop_images' AND public.is_staff(auth.uid()));

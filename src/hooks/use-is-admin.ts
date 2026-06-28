@@ -2,18 +2,17 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 
-export function useIsStaff() {
+export function useIsAdmin() {
   const { user, loading } = useAuth();
-  const [state, setState] = useState<{ checking: boolean; isAdmin: boolean; isStaff: boolean }>({
+  const [state, setState] = useState<{ checking: boolean; isAdmin: boolean }>({
     checking: true,
     isAdmin: false,
-    isStaff: false,
   });
 
   useEffect(() => {
     if (loading) return;
     if (!user) {
-      setState({ checking: false, isAdmin: false, isStaff: false });
+      setState({ checking: false, isAdmin: false });
       return;
     }
     supabase
@@ -25,7 +24,6 @@ export function useIsStaff() {
         setState({
           checking: false,
           isAdmin: roles.includes("admin"),
-          isStaff: roles.includes("admin") || roles.includes("support"),
         });
       });
   }, [user, loading]);

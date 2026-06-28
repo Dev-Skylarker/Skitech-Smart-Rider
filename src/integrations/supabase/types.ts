@@ -67,19 +67,19 @@ export type Database = {
         Row: {
           id: string
           user_id: string
-          role: 'admin' | 'support' | 'user'
+          role: 'admin' | 'user'
           created_at: string
         }
         Insert: {
           id?: string
           user_id: string
-          role?: 'admin' | 'support' | 'user'
+          role?: 'admin' | 'user'
           created_at?: string
         }
         Update: {
           id?: string
           user_id?: string
-          role?: 'admin' | 'support' | 'user'
+          role?: 'admin' | 'user'
           created_at?: string
         }
         Relationships: []
@@ -367,13 +367,13 @@ export type Database = {
     }
     Functions: {
       has_role: {
-        Args: { _role: 'admin' | 'support' | 'user'; _user_id: string }
+        Args: { _role: 'admin' | 'user'; _user_id: string }
         Returns: boolean
       }
       is_staff: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
-      app_role: 'admin' | 'support' | 'user'
+      app_role: 'admin' | 'user'
     }
     CompositeTypes: {
       [_ in never]: never
@@ -384,7 +384,7 @@ export type Database = {
 export const Constants = {
   public: {
     Enums: {
-      app_role: ['admin', 'support', 'user'],
+      app_role: ['admin', 'user'],
     },
   },
 } as const

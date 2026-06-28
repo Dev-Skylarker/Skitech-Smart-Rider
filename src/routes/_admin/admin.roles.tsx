@@ -18,7 +18,7 @@ function AdminRoles() {
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState(true);
   const [email, setEmail] = useState("");
-  const [role, setRole] = useState<"admin" | "support">("support");
+  const [role, setRole] = useState<"admin">("admin");
   const [busy, setBusy] = useState(false);
 
   async function list() {
@@ -36,7 +36,7 @@ function AdminRoles() {
     });
   }
 
-  async function grant(emailStr: string, roleVal: "admin" | "support") {
+  async function grant(emailStr: string, roleVal: "admin") {
     const { data: profiles } = await supabase.from("profiles").select("id, email");
     const found = (profiles ?? []).find((p: any) => p.email?.toLowerCase() === emailStr.toLowerCase());
     if (!found) throw new Error(`No user found for ${emailStr}`);
@@ -101,7 +101,7 @@ function AdminRoles() {
     <div className="space-y-6 max-w-4xl">
       <div>
         <h1 className="text-2xl font-bold">Roles</h1>
-        <p className="text-sm text-muted-foreground">Grant admin or support access by email.</p>
+        <p className="text-sm text-muted-foreground">Grant admin access by email.</p>
       </div>
 
       <div className="rounded-2xl border bg-card p-5">
@@ -113,17 +113,16 @@ function AdminRoles() {
           </div>
           <div>
             <Label>Role</Label>
-            <Select value={role} onValueChange={(v) => setRole(v as "admin" | "support")}>
+            <Select value={role} onValueChange={(v) => setRole(v as "admin")}>
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="support">Support</SelectItem>
                 <SelectItem value="admin">Admin</SelectItem>
               </SelectContent>
             </Select>
           </div>
           <Button onClick={onGrant} disabled={busy || !email.trim()}>{busy ? "…" : "Grant"}</Button>
         </div>
-        <p className="mt-3 text-xs text-muted-foreground">The user must already have an account. Support can manage all riders and orders. Admin can also manage roles.</p>
+        <p className="mt-3 text-xs text-muted-foreground">The user must already have an account.</p>
       </div>
 
       <div className="rounded-xl border bg-card overflow-x-auto">

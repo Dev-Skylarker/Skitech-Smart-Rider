@@ -34,7 +34,7 @@ function Login() {
     if (!parsed.success) return toast.error(parsed.error.issues[0].message);
 
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email: email.trim().toLowerCase(),
       password,
     });
@@ -48,6 +48,20 @@ function Login() {
       return;
     }
     toast.success("Welcome back!");
+    
+    if (data?.user) {
+      const { data: roleData } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", data.user.id)
+        .single();
+        
+      if (roleData?.role === "admin") {
+        nav({ to: redirect || "/admin" });
+        return;
+      }
+    }
+    
     nav({ to: redirect || "/dashboard" });
   }
 

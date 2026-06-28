@@ -1,7 +1,7 @@
 import { createFileRoute, Link, Outlet, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useAuth } from "@/lib/auth";
-import { useIsStaff } from "@/hooks/use-is-admin";
+import { useIsAdmin } from "@/hooks/use-is-admin";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AdminSidebar } from "@/components/AdminSidebar";
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,7 @@ export const Route = createFileRoute("/_admin")({ component: AdminLayout });
 
 function AdminLayout() {
   const { user, loading, signOut } = useAuth();
-  const { checking, isStaff } = useIsStaff();
+  const { checking, isAdmin } = useIsAdmin();
   const nav = useNavigate();
   const { isDark, toggleTheme } = useTheme();
 
@@ -22,8 +22,8 @@ function AdminLayout() {
   }, [loading, user, nav]);
 
   useEffect(() => {
-    if (!checking && user && !isStaff) nav({ to: "/dashboard" });
-  }, [checking, user, isStaff, nav]);
+    if (!checking && user && !isAdmin) nav({ to: "/dashboard" });
+  }, [checking, user, isAdmin, nav]);
 
   if (loading || checking) {
     return (
@@ -37,7 +37,7 @@ function AdminLayout() {
       </div>
     );
   }
-  if (!user || !isStaff) return null;
+  if (!user || !isAdmin) return null;
 
   return (
     <SidebarProvider className="dark">
