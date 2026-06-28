@@ -14,7 +14,7 @@ DO $$ BEGIN
 EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 
 DO $$ BEGIN
-  CREATE TYPE profile_status AS ENUM ('draft', 'pending_payment', 'active', 'suspended');
+  CREATE TYPE profile_status AS ENUM ('draft', 'pending_payment', 'active', 'suspended', 'banned');
 EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 
 -- ============================================================
@@ -473,3 +473,32 @@ DROP POLICY IF EXISTS "Staff can delete shop images." ON storage.objects;
 CREATE POLICY "Staff can delete shop images."
   ON storage.objects FOR DELETE
   USING (bucket_id = 'shop_images' AND public.is_staff(auth.uid()));
+-- ============================================================
+-- ADMIN FUNCTIONS
+-- ============================================================
+
+-- Function to securely delete a user account from the client (Admin only)
+CREATE OR REPLACE FUNCTION public.admin_delete_user(target_user_id UUID)
+RETURNS BOOLEAN
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+DECLARE
+  is_admin BOOLEAN;
+BEGIN
+  -- Verify the caller is an admin
+  SELECT EXISTS (
+    SELECT 1 FROM public.user_roles 
+    WHERE user_id = auth.uid() AND role = 'admin'
+  ) INTO is_admin;
+
+  IF NOT is_admin THEN
+    RAISE EXCEPTION 'Unauthorized: Only admins can delete users.';
+  END IF;
+
+  -- Delete the user from auth.users (cascades to public.profiles)
+  DELETE FROM auth.users WHERE id = target_user_id;
+  
+  RETURN TRUE;
+END;
+$$;
