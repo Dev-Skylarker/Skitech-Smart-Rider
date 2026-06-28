@@ -345,33 +345,39 @@ function ActiveView({ profile }: { profile: Profile }) {
           </div>
         </div>
 
-        {/* QR Code card */}
-        <div className="rounded-2xl bg-gradient-to-br from-primary to-secondary text-primary-foreground p-6 flex flex-col items-center justify-center relative overflow-hidden">
-          <div className="text-xs font-bold opacity-80 mb-4 tracking-wider uppercase">Your Digital QR Sticker</div>
+        {/* QR Code Section */}
+        <div className="flex flex-col items-center justify-center mt-12 mb-4">
+          <div className="text-sm font-bold opacity-50 mb-6 tracking-wider uppercase text-foreground">Your Digital QR Sticker</div>
           <div className="relative">
             {/* Sticker container to be exported */}
             <div 
               id="qr-sticker-container"
-              className="relative w-[320px] aspect-square rounded-3xl bg-gradient-to-br from-primary to-primary/90 p-6 overflow-hidden"
+              className="relative w-[320px] aspect-[4/5] rounded-3xl bg-gradient-to-br from-primary to-primary/90 p-6 overflow-hidden flex flex-col"
             >
               {/* Decorative waves */}
-              <svg className="absolute inset-0 w-full h-full opacity-90" viewBox="0 0 380 380" preserveAspectRatio="none">
-                <path d="M0,280 C120,220 240,320 380,250 L380,380 L0,380 Z" fill="var(--secondary)" />
-                <path d="M0,310 C130,260 260,330 380,290 L380,380 L0,380 Z" fill="var(--secondary)" opacity="0.7" />
+              <svg className="absolute inset-0 w-full h-full opacity-90" viewBox="0 0 380 475" preserveAspectRatio="none">
+                <path d="M0,350 C120,275 240,400 380,312 L380,475 L0,475 Z" fill="var(--secondary)" />
+                <path d="M0,387 C130,325 260,412 380,362 L380,475 L0,475 Z" fill="var(--secondary)" opacity="0.7" />
               </svg>
 
               {/* Header */}
-              <div className="relative flex items-start justify-between text-primary-foreground mb-4">
-                <div className="text-3xl font-black tracking-tight">SCAN</div>
-                <div className="h-12 w-12 rounded-lg bg-primary-foreground text-primary grid place-items-center font-black text-xl shadow-lg">ST</div>
+              <div className="relative flex items-center justify-between text-primary-foreground mb-6">
+                <div className="flex items-center gap-2">
+                  <img src={logoImg} alt="Logo" className="h-10 w-10 rounded-full object-cover shadow-sm bg-white" />
+                  <div className="leading-none">
+                    <div className="font-black tracking-tight text-xl text-black">Skitech</div>
+                    <div className="font-medium text-sm text-white opacity-90 tracking-wide">Smart Rider</div>
+                  </div>
+                </div>
+                <div className="h-12 w-12 rounded-xl bg-white text-primary grid place-items-center font-black text-xl shadow-lg">ST</div>
               </div>
 
               {/* QR Area */}
-              <div className="relative rounded-2xl bg-white p-4 shadow-lg mb-4">
-                <div className="aspect-square w-full rounded-lg bg-gradient-to-br from-muted/50 to-muted grid place-items-center">
+              <div className="relative rounded-3xl bg-white p-5 shadow-xl mb-auto">
+                <div className="aspect-square w-full rounded-2xl bg-gradient-to-br from-muted/30 to-muted grid place-items-center p-1">
                   <QRCodeSVG
                     value={url}
-                    size={220}
+                    size={230}
                     bgColor="transparent"
                     fgColor="#1a1a1a"
                     level="H"
@@ -381,9 +387,9 @@ function ActiveView({ profile }: { profile: Profile }) {
               </div>
 
               {/* Tagline */}
-              <div className="relative text-center text-primary-foreground">
-                <div className="text-lg font-semibold">For rider profile</div>
-                <div className="text-sm opacity-80 mt-1">Tap to pay</div>
+              <div className="relative text-center text-primary-foreground mt-6 px-2">
+                <div className="text-sm font-black uppercase tracking-wide mb-1">Scan for Rider Info</div>
+                <div className="text-[11px] font-medium opacity-90 leading-snug">Save contact instantly, copy payment number, and pay faster!</div>
               </div>
             </div>
 
@@ -397,8 +403,8 @@ function ActiveView({ profile }: { profile: Profile }) {
           </div>
 
           <Button
-            className="mt-10 gap-2 font-bold w-[320px]"
-            variant="secondary"
+            className="mt-12 gap-2 font-bold w-[320px] shadow-md h-12 text-base"
+            variant="default"
             onClick={async () => {
               const el = document.getElementById("qr-sticker-container");
               if (!el) return;
