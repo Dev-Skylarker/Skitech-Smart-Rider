@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
@@ -74,6 +75,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Skitech Smart Rider gives boda riders a permanent QR code that links to their public payment profile. Sign up, create your profile for KES 100, get paid.",
       },
       { name: "theme-color", content: "#F37021" },
+      // iOS / Safari PWA support
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "default" },
+      { name: "apple-mobile-web-app-title", content: "Smart Rider" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -90,6 +95,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap",
       },
+      // PWA manifest and apple-touch-icon
+      { rel: "manifest", href: "/manifest.json" },
+      { rel: "apple-touch-icon", href: "/logo.png" },
     ],
   }),
   shellComponent: RootShell,
@@ -116,6 +124,30 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && "serviceWorker" in navigator) {
+      // Register SW after page loads to prevent blocking critical initial fetches
+      const registerSW = () => {
+        navigator.serviceWorker
+          .register("/sw.js")
+          .then((registration) => {
+            console.log("PWA Service Worker registered with scope:", registration.scope);
+          })
+          .catch((err) => {
+            console.error("PWA Service Worker registration failed:", err);
+          });
+      };
+
+      if (document.readyState === "complete") {
+        registerSW();
+      } else {
+        window.addEventListener("load", registerSW);
+        return () => window.removeEventListener("load", registerSW);
+      }
+    }
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
