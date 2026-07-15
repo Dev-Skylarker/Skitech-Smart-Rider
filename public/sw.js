@@ -1,4 +1,4 @@
-const CACHE_NAME = "smart-rider-pwa-v1";
+const CACHE_NAME = `skitech-smart-rider-pwa-${Date.now()}`;
 const ASSETS_TO_CACHE = [
   "/",
   "/manifest.json",
