@@ -1,16 +1,11 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 
-const getEnv = (key: string): string => {
-  const val = typeof import.meta !== 'undefined' && import.meta.env ? import.meta.env[key] : undefined;
-  if (val && val !== 'undefined' && val !== 'null' && val.trim() !== '') return val;
-  const procVal = typeof process !== 'undefined' && process.env ? process.env[key] : undefined;
-  if (procVal && procVal !== 'undefined' && procVal !== 'null' && procVal.trim() !== '') return procVal;
-  return '';
-};
-
-const supabaseUrl = getEnv('VITE_SUPABASE_URL') || 'https://placeholder-url.supabase.co';
-const supabaseAnonKey = getEnv('VITE_SUPABASE_ANON_KEY') || 'placeholder-anon-key';
+// IMPORTANT: Vite statically replaces import.meta.env.VITE_* at build time
+// only when accessed as literal dot-notation. Dynamic bracket access
+// (import.meta.env[key]) is NOT replaced and always returns undefined in prod.
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
 
 export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
   auth: {
