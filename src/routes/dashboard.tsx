@@ -133,7 +133,7 @@ function NoProfileView({ userName }: { userName: string }) {
           </h1>
           <p className="opacity-90 max-w-xl text-sm md:text-base leading-relaxed mb-6">
             Create your profile and get a permanent QR code that customers scan to pay you instantly.
-            No commission, no hassle — just your money, directly to your wallet.
+            No typing errors, no hassle — just your money, directly to your wallet.
           </p>
           <div className="flex flex-wrap gap-3">
             <Link to="/profile/create">

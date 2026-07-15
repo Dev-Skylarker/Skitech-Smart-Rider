@@ -34,7 +34,7 @@ const sections = [
       "Profile Activation Fee: A one-time fee of KES 100 is charged to activate your public rider profile. This fee is non-refundable once your profile has been activated.",
       "QR Sticker Orders: Physical QR sticker purchases are a separate transaction and pricing will be displayed at checkout. All sticker orders are subject to production and delivery timelines.",
       "Skitech Smart Rider does NOT process payments on behalf of riders. The Platform only facilitates the display of your M-Pesa, Till, Paybill, or bank account details. All payment transactions happen directly between the rider and their customers.",
-      "We take no commission on any payments made to riders by their customers.",
+      "The Platform is a digital identity space; we do not touch, handle, or intermediate any funds.",
       "Payment processing for profile activation fees is handled by approved third-party payment processors. Payment data is not stored on our servers.",
       "In the event of a failed payment, your profile will remain in 'pending' status until payment is confirmed by an administrator.",
     ],
@@ -93,7 +93,6 @@ const sections = [
 ];
 
 function TermsPage() {
-  const lastUpdated = "June 28, 2026";
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -113,10 +112,6 @@ function TermsPage() {
               Please read these terms carefully before using Skitech Smart Rider. By creating an account or
               using our platform, you agree to the following terms.
             </p>
-            <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-muted px-4 py-1.5 text-sm text-muted-foreground">
-              <FileText className="h-3.5 w-3.5" />
-              Last updated: {lastUpdated}
-            </div>
           </div>
         </section>
 

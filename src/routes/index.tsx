@@ -4,7 +4,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { Button } from "@/components/ui/button";
 import { QrCode, Smartphone, Wallet, ShieldCheck, Users, Zap, TrendingUp, Clock, CircleCheck as CheckCircle2, ArrowRight, MapPin, Phone, CreditCard, Truck, Star } from "lucide-react";
 import { useAuth } from "@/lib/auth";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import logoImg from "@/assets/logo.png";
 
 export const Route = createFileRoute("/")({ component: Landing });
@@ -18,6 +18,46 @@ function Landing() {
       nav({ to: "/dashboard", replace: true });
     }
   }, [user, loading, nav]);
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [animClass, setAnimClass] = useState("animate-fade-in");
+
+  const testimonials = [
+    {
+      initials: "JM",
+      name: "John Mwangi",
+      text: "Before Skitech, I'd waste so much time repeating my Till number to customers. Now they scan my QR, save my contact, and copy the payment info instantly. It completely removes typing errors. Best KES 100 I ever spent to activate my digital profile.",
+      rating: 5,
+    },
+    {
+      initials: "MA",
+      name: "Mary Atieno",
+      text: "I run a busy salon in Kisumu. Showing my Till details to clients was slow and annoying. Now they scan my QR, copy the number, and pay instantly. It has made my business so much smoother!",
+      rating: 5,
+    },
+    {
+      initials: "DO",
+      name: "David Ochieng",
+      text: "The Save Contact feature is a game changer. Regular clients scan my QR code on my bike once, and they always have my contact details saved. My daily runs are much easier now.",
+      rating: 5,
+    },
+    {
+      initials: "GW",
+      name: "Grace Wambui",
+      text: "Customers would sometimes mistype my Till number in the noise. Now, they scan my Smart QR code, copy the Till number in one tap, and pay. Perfect and error-free every time.",
+      rating: 5,
+    }
+  ];
+
+  useEffect(() => {
+    const anims = ["animate-fade-in", "animate-slide-up", "animate-slide-left", "animate-slide-right", "animate-scale-in"];
+    const interval = setInterval(() => {
+      const nextAnim = anims[Math.floor(Math.random() * anims.length)];
+      setAnimClass(nextAnim);
+      setCurrentIndex((prev) => (prev + 1) % testimonials.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [testimonials.length]);
 
   if (loading || user) {
     return (
@@ -49,11 +89,6 @@ function Landing() {
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
             {/* Left Content */}
             <div className="text-center lg:text-left">
-              <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-2 text-sm font-medium mb-6 animate-[fadeIn_0.5s_ease-out]">
-                <Zap className="h-4 w-4 text-primary" />
-                <span>Built for Kenyan riders</span>
-              </div>
-
               <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-black leading-tight mb-6">
                 One scan.
                 <br />
@@ -61,18 +96,18 @@ function Landing() {
               </h1>
 
               <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mb-8 leading-relaxed">
-                Your permanent QR sticker links customers directly to your payment profile. They scan, copy your M-Pesa or Till number, and pay. Zero commissions. No card readers. Your money goes straight to your wallet.
+                Your permanent QR sticker links customers directly to your payment profile. They scan, copy your M-Pesa or Till number, and pay. No typing errors, no card readers. Your money goes straight to your wallet.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-12">
                 <Link to="/signup">
-                  <Button size="lg" className="text-base h-12 px-8 shadow-lg hover:shadow-xl transition-shadow">
-                    Get your QR sticker
+                  <Button size="lg" className="text-base h-12 px-8 shadow-lg hover:shadow-xl hover:scale-[1.02] hover:shadow-primary/20 transition-all duration-300">
+                    Get started
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </Link>
                 <Link to="/how-it-works">
-                  <Button size="lg" variant="outline" className="text-base h-12 px-8">
+                  <Button size="lg" variant="outline" className="text-base h-12 px-8 hover:scale-[1.02] transition-all duration-300">
                     See how it works
                   </Button>
                 </Link>
@@ -85,8 +120,8 @@ function Landing() {
                   <div className="text-sm text-muted-foreground">Riders</div>
                 </div>
                 <div className="text-center lg:text-left">
-                  <div className="text-2xl sm:text-3xl font-bold text-primary">0%</div>
-                  <div className="text-sm text-muted-foreground">Commission</div>
+                  <div className="text-2xl sm:text-3xl font-bold text-primary">100%</div>
+                  <div className="text-sm text-muted-foreground">Direct Payments</div>
                 </div>
                 <div className="text-center lg:text-left">
                   <div className="text-2xl sm:text-3xl font-bold text-primary">24/7</div>
@@ -153,7 +188,7 @@ function Landing() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div className="flex flex-col items-center gap-2">
               <ShieldCheck className="h-8 w-8 text-primary" />
-              <div className="font-semibold">Bank-grade security</div>
+              <div className="font-semibold">Guaranteed security</div>
             </div>
             <div className="flex flex-col items-center gap-2">
               <Clock className="h-8 w-8 text-primary" />
@@ -192,19 +227,19 @@ function Landing() {
               step: "01",
               icon: Users,
               title: "Create your profile",
-              description: "Sign up and add your name, phone, plate number, and route. Takes just 2 minutes.",
+              description: "Sign up in seconds and add your name, photo, route details, and payment numbers.",
             },
             {
               step: "02",
               icon: QrCode,
-              title: "Get your QR sticker",
-              description: "Order your weatherproof QR sticker. One-time payment of KES 500. We deliver anywhere in Kenya.",
+              title: "Activate your profile",
+              description: "Pay a one-time KES 100 fee to generate your permanent Smart QR code and unlock your dashboard.",
             },
             {
               step: "03",
               icon: Wallet,
               title: "Start getting paid",
-              description: "Stick it on your bike. Customers scan, copy your number, and pay you directly. Zero commission.",
+              description: "Display your QR. Customers scan to save your contact and one-tap copy your payment info.",
             },
           ].map((item, i) => (
             <div key={i} className="relative group">
@@ -251,8 +286,8 @@ function Landing() {
               },
               {
                 icon: Wallet,
-                title: "Zero Commission",
-                description: "We never touch your money. Every shilling goes directly to your M-Pesa or bank account.",
+                title: "Direct Payments",
+                description: "We never touch your money. Every shilling goes directly and instantly to your wallet.",
                 color: "bg-primary/10",
               },
               {
@@ -290,10 +325,6 @@ function Landing() {
       <section className="mx-auto max-w-5xl px-6 md:px-8 py-20">
         <div className="grid lg:grid-cols-2 gap-12 items-center mx-auto">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full border bg-card px-4 py-2 text-sm font-medium mb-6">
-              <Star className="h-4 w-4 fill-primary text-primary" />
-              <span>Loved by riders</span>
-            </div>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6">
               Join hundreds of riders who've simplified getting paid
             </h2>
@@ -305,7 +336,7 @@ function Landing() {
               {[
                 "Works with M-Pesa, Till, Paybill, and bank accounts",
                 "Instant setup — be ready in under 5 minutes",
-                "Weatherproof sticker delivered to your location",
+                "Downloadable smart QR code ready to print or share",
                 "Update your details anytime from your dashboard",
               ].map((item, i) => (
                 <div key={i} className="flex items-start gap-3">
@@ -316,8 +347,8 @@ function Landing() {
             </div>
 
             <Link to="/signup">
-              <Button size="lg" className="shadow-lg hover:shadow-xl transition-shadow">
-                Get started for free
+              <Button size="lg" className="shadow-lg hover:shadow-xl hover:scale-[1.02] hover:shadow-primary/20 transition-all duration-300">
+                Get started
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
@@ -325,21 +356,44 @@ function Landing() {
 
           <div className="relative">
             <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-3xl blur-3xl" />
-            <div className="relative rounded-3xl border bg-card p-8 shadow-xl">
-              <div className="flex items-start gap-4 mb-6">
-                <div className="h-14 w-14 rounded-full bg-primary text-primary-foreground grid place-items-center text-xl font-bold">
-                  JM
-                </div>
+            <div className="relative min-h-[300px] flex flex-col justify-between rounded-3xl border bg-card p-8 shadow-xl">
+              {/* Dynamic Animated Card */}
+              <div key={currentIndex} className={`flex-1 flex flex-col justify-between ${animClass}`}>
                 <div>
-                  <div className="font-bold text-lg">John Mwangi</div>
+                  <div className="flex items-start gap-4 mb-6">
+                    <div className="h-14 w-14 rounded-full bg-primary text-primary-foreground grid place-items-center text-xl font-bold shrink-0">
+                      {testimonials[currentIndex].initials}
+                    </div>
+                    <div>
+                      <div className="font-bold text-lg text-foreground">{testimonials[currentIndex].name}</div>
+                      <div className="text-xs text-muted-foreground">Verified profile</div>
+                    </div>
+                  </div>
+                  <p className="text-lg leading-relaxed mb-6 text-muted-foreground italic">
+                    "{testimonials[currentIndex].text}"
+                  </p>
+                </div>
+                
+                <div className="flex items-center gap-1">
+                  {[...Array(testimonials[currentIndex].rating)].map((_, i) => (
+                    <Star key={i} className="h-5 w-5 fill-primary text-primary" />
+                  ))}
                 </div>
               </div>
-              <p className="text-lg leading-relaxed mb-6">
-                "Before ScanTap, I'd waste so much time repeating my number to customers. Now they just scan and pay. My earnings have gone up because I'm not losing customers to typing errors. Best KES 500 I ever spent."
-              </p>
-              <div className="flex items-center gap-1">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="h-5 w-5 fill-primary text-primary" />
+
+              {/* Slider indicators */}
+              <div className="flex justify-center gap-2 mt-6">
+                {testimonials.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => {
+                      const anims = ["animate-fade-in", "animate-slide-up", "animate-slide-left", "animate-slide-right", "animate-scale-in"];
+                      setAnimClass(anims[Math.floor(Math.random() * anims.length)]);
+                      setCurrentIndex(i);
+                    }}
+                    className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${i === currentIndex ? "bg-primary w-6" : "bg-muted-foreground/30 hover:bg-primary/50"}`}
+                    aria-label={`Go to slide ${i + 1}`}
+                  />
                 ))}
               </div>
             </div>
@@ -355,51 +409,43 @@ function Landing() {
               Simple, transparent pricing
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              One-time payment. No hidden fees. No commissions on your earnings.
+              One-time payment. No hidden fees. Direct payments straight to your wallet.
             </p>
           </div>
 
           <div className="max-w-md mx-auto">
             <div className="rounded-3xl border bg-card p-8 shadow-xl relative overflow-hidden">
-              <div className="absolute top-0 right-0 bg-primary text-primary-foreground text-xs font-black px-4 py-2 rounded-bl-2xl tracking-wide">
-                100 SK
+              <div className="absolute top-0 right-0 bg-primary/10 text-primary text-xs font-bold px-4 py-2 rounded-bl-2xl tracking-wide uppercase">
+                Secure
               </div>
               <div className="text-center mb-6">
-                <h3 className="text-2xl font-bold mb-2">Smart Rider Sticker</h3>
-                <div className="text-5xl font-black text-primary mb-2">KES 500</div>
+                <h3 className="text-2xl font-bold mb-2">Activate Your Smart Profile</h3>
+                <div className="text-5xl font-black text-primary mb-2">KES 100</div>
                 <p className="text-muted-foreground">One-time payment · No monthly fees</p>
               </div>
 
-              <ul className="space-y-4 mb-8">
+              <ul className="space-y-4 mb-8 text-left">
                 {[
-                  "Weatherproof QR sticker delivered to you",
-                  "Permanent public profile page",
-                  "Update your details anytime — no reprinting",
-                  "Delivery anywhere in Kenya",
-                  "M-Pesa / Send Money / Till / Paybill / Bank",
-                  "Multiple payment methods supported",
-                  "Zero commission forever",
-                  "Save contact (vCard) button for customers",
-                  "QR code on your dashboard to share",
-                  "Edit payment info anytime from dashboard",
-                  "Verified rider badge",
-                  "Route & city display for customer trust",
+                  "Allows you to add your payment methods including: Mpesa, pochi & others as per the system inputs",
+                  "Instant setup — be ready in under 5 minutes",
+                  "Downloadable smart QR code ready to print or share",
+                  "Update your details anytime from your dashboard",
                 ].map((feature, i) => (
-                  <li key={i} className="flex items-start gap-3">
+                  <li key={i} className="flex items-start gap-3 justify-start text-left">
                     <CheckCircle2 className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                    <span>{feature}</span>
+                    <span className="text-muted-foreground text-sm sm:text-base">{feature}</span>
                   </li>
                 ))}
               </ul>
 
               <Link to="/signup">
-                <Button className="w-full" size="lg">
-                  Get your QR sticker now
+                <Button className="w-full h-12 text-base font-bold shadow-lg hover:shadow-xl hover:scale-[1.02] hover:shadow-primary/20 transition-all duration-300" size="lg">
+                  Get started
                 </Button>
               </Link>
 
               <p className="text-center text-sm text-muted-foreground mt-4">
-                Create your free account, then order when ready
+                Create your free account, then activate when ready
               </p>
             </div>
           </div>
@@ -417,12 +463,12 @@ function Landing() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/signup">
-              <Button size="lg" variant="secondary" className="text-base px-8">
+              <Button size="lg" variant="secondary" className="text-base px-8 hover:scale-[1.02] transition-all duration-300">
                 Create free account
               </Button>
             </Link>
             <Link to="/how-it-works">
-              <Button size="lg" variant="outline" className="text-base px-8 bg-primary-foreground text-primary hover:bg-primary-foreground/90">
+              <Button size="lg" variant="outline" className="text-base px-8 bg-primary-foreground text-primary hover:bg-primary-foreground/90 hover:scale-[1.02] transition-all duration-300">
                 Learn more
               </Button>
             </Link>

@@ -138,7 +138,7 @@ function AdminOrders() {
             ) : orders.map((o) => (
               <TableRow key={o.id}>
                 <TableCell>
-                  <Link to="/admin/riders/$id" params={{ id: o.profile_id }} search={(prev) => prev} className="font-medium hover:underline">
+                  <Link to="/admin/riders" search={{ status: "all" }} className="font-medium hover:underline">
                     {o.profile?.full_name || "—"}
                   </Link>
                 </TableCell>

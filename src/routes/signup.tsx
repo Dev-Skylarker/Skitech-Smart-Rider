@@ -16,8 +16,8 @@ export const Route = createFileRoute("/signup")({ component: Signup });
 
 const schema = z
   .object({
-    firstName: z.string().trim().min(2, "First name must be at least 2 characters").max(40),
-    surname: z.string().trim().min(2, "Surname must be at least 2 characters").max(40),
+    firstName: z.string().trim().min(2, "ensure all input fields are filled.").max(40),
+    surname: z.string().trim().min(2, "ensure all input fields are filled.").max(40),
     email: z.string().email("Enter a valid email address"),
     password: z.string().min(8, "Password must be at least 8 characters"),
     confirmPassword: z.string(),
@@ -43,6 +43,14 @@ function Signup() {
   const [loading, setLoading] = useState(false);
   const [duplicateEmailDialog, setDuplicateEmailDialog] = useState(false);
   const [successDialog, setSuccessDialog] = useState(false);
+
+  const isFormValid =
+    form.firstName.trim().length > 0 &&
+    form.surname.trim().length > 0 &&
+    form.email.trim().length > 0 &&
+    form.password.length > 0 &&
+    form.confirmPassword.length > 0 &&
+    form.termsAccepted;
 
   function set(field: keyof typeof form, value: string | boolean) {
     setForm((f) => ({ ...f, [field]: value }));
@@ -277,8 +285,10 @@ function Signup() {
                 {/* Submit */}
                 <Button
                   type="submit"
-                  className="w-full h-12 text-base font-bold gap-2 mt-2"
-                  disabled={loading}
+                  className={`w-full h-12 text-base font-bold gap-2 mt-2 transition-all duration-300 ${
+                    !isFormValid ? "opacity-40 cursor-not-allowed" : "hover:scale-[1.01] hover:shadow-lg hover:shadow-primary/20"
+                  }`}
+                  disabled={loading || !isFormValid}
                 >
                   {loading ? (
                     <span className="flex items-center gap-2">

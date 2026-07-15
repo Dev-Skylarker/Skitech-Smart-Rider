@@ -7,7 +7,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import {
-  ShoppingCart, Package, Minus, Plus, Trash2, ArrowLeft, ShoppingBag, ChevronRight
+  ShoppingCart, Package, Minus, Plus, Trash2, ArrowLeft, ShoppingBag, ChevronRight, Mail, ArrowRight
 } from "lucide-react";
 
 export const Route = createFileRoute("/cart")({ component: CartPage });
@@ -110,18 +110,28 @@ function CartPage() {
         </div>
 
         {items.length === 0 ? (
-          <div className="text-center py-20 animate-fade-in">
-            <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-muted mb-6">
-              <ShoppingCart className="h-10 w-10 text-muted-foreground" />
+          <div className="text-center py-20 bg-muted/5 border border-dashed rounded-3xl p-8 max-w-lg mx-auto animate-scale-in">
+            <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-primary/10 mb-6 text-primary animate-pulse">
+              <ShoppingCart className="h-10 w-10" />
             </div>
-            <h2 className="text-xl font-bold mb-2 text-foreground">Your cart is empty</h2>
-            <p className="text-muted-foreground text-sm mb-6">Browse the shop and add items to get started</p>
-            <Link to="/shop">
-              <Button className="gap-2">
-                <ShoppingBag className="h-4 w-4" />
-                Browse Shop
-              </Button>
-            </Link>
+            <h2 className="text-2xl font-black mb-2 text-foreground">Your cart is empty</h2>
+            <p className="text-muted-foreground text-sm mb-8 max-w-sm mx-auto leading-relaxed">
+              It looks like you haven't added any items to your cart yet. Browse the shop to find stickers and other rider gear.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Link to="/shop" className="w-full sm:w-auto">
+                <Button className="w-full gap-2 font-bold hover:scale-[1.02] transition-all duration-300">
+                  <ShoppingBag className="h-4 w-4" />
+                  Browse Shop
+                </Button>
+              </Link>
+              <Link to="/contact" className="w-full sm:w-auto">
+                <Button variant="outline" className="w-full gap-2 font-bold hover:scale-[1.02] transition-all duration-300">
+                  <Mail className="h-4 w-4" />
+                  Contact Support
+                </Button>
+              </Link>
+            </div>
           </div>
         ) : (
           <div className="flex flex-col lg:flex-row gap-6">

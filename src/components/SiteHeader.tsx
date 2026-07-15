@@ -40,9 +40,9 @@ export function SiteHeader() {
           {/* Desktop nav (public only) */}
           {!user && (
             <nav className="hidden md:flex items-center gap-5 text-sm font-medium ml-2">
-              <Link to="/about" className="text-muted-foreground hover:text-primary transition-colors">About</Link>
-              <Link to="/how-it-works" className="text-muted-foreground hover:text-primary transition-colors">How it works</Link>
-              <Link to="/faq" className="text-muted-foreground hover:text-primary transition-colors">FAQ</Link>
+              <Link to="/about" activeProps={{ className: "text-primary font-semibold" }} className="text-muted-foreground hover:text-primary transition-colors">About</Link>
+              <Link to="/how-it-works" activeProps={{ className: "text-primary font-semibold" }} className="text-muted-foreground hover:text-primary transition-colors">How it works</Link>
+              <Link to="/faq" activeProps={{ className: "text-primary font-semibold" }} className="text-muted-foreground hover:text-primary transition-colors">FAQ</Link>
             </nav>
           )}
         </div>
@@ -175,6 +175,7 @@ function MobileLink({
     <Link
       to={to}
       onClick={onClick}
+      activeProps={{ className: "text-primary bg-primary/10 font-bold" }}
       className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium text-foreground hover:text-primary hover:bg-primary/5 transition-colors ${className}`}
     >
       {icon}

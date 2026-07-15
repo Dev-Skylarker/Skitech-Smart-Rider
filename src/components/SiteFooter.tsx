@@ -20,14 +20,14 @@ export function SiteFooter() {
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed max-w-xs">
               Empowering Kenyan riders with permanent digital payment profiles.
-              Scan to pay — zero commission, no card readers, direct to your wallet.
+              Scan to copy details — instant sharing, no card readers, direct and hassle-free.
             </p>
           </div>
 
           {/* Links */}
           <div className="flex flex-wrap gap-8">
             <div>
-              <div className="font-semibold text-sm text-foreground mb-3">Platform</div>
+              <div className="h-5 mb-3" />
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li><Link to="/" className="hover:text-primary transition-colors">Home</Link></li>
                 <li><Link to="/about" className="hover:text-primary transition-colors">About</Link></li>
@@ -79,7 +79,7 @@ export function SiteFooter() {
           )}
 
           <div className="text-xs text-muted-foreground">
-            Built for Kenyan riders 🇰🇪 · Zero commission forever
+            Developed by: <a href="https://skitechsolutions.co.ke" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors font-semibold">Skitech Solutions</a>
           </div>
         </div>
       </div>
