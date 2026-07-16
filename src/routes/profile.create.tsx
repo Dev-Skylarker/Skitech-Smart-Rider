@@ -10,8 +10,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Trash2, Plus, ArrowLeft, CheckCircle2, Pencil, Smartphone, Building2, Globe, Star, CreditCard } from "lucide-react";
+import { Trash2, Plus, ArrowLeft, CheckCircle2, Pencil, Star, Check, Smartphone, Landmark, Wallet, Coins, AlertCircle, Sparkles } from "lucide-react";
 import { PaymentConfirmDialog, ConfirmChangesDialog } from "@/error-handling/dialogs";
+import { AppDialog } from "@/components/ui/AppDialog";
 import { fromDbMethodType, type PaymentMethodType } from "@/lib/payment-methods";
 import { replacePaymentMethods, upsertOwnProfile } from "@/lib/profiles";
 import Cropper from "react-easy-crop";
@@ -68,6 +69,8 @@ function CreateProfile() {
   // Dialog states
   const [showPayConfirm, setShowPayConfirm] = useState(false);
   const [showEditConfirm, setShowEditConfirm] = useState(false);
+  const [primaryIndexToConfirm, setPrimaryIndexToConfirm] = useState<number | null>(null);
+  const [showPrimaryConfirm, setShowPrimaryConfirm] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) nav({ to: "/login", search: { redirect: "/profile/create" } });
@@ -118,6 +121,34 @@ function CreateProfile() {
       arr.map((m, idx) => (idx === i ? { ...m, ...patch } : patch.is_primary ? { ...m, is_primary: false } : m))
     );
   }
+
+  const handleDeleteMethod = (index: number) => {
+    const methodToDelete = methods[index];
+    const remaining = methods.filter((_, idx) => idx !== index);
+    if (methodToDelete.is_primary && remaining.length > 0) {
+      remaining[0].is_primary = true;
+      toast.info(`Primary method deleted. "${remaining[0].method_type.replace(/_/g, " ")}" has been auto-promoted to Primary.`);
+    }
+    setMethods(remaining);
+  };
+
+  const handleSetPrimaryRequest = (index: number) => {
+    if (methods[index].is_primary) return;
+    setPrimaryIndexToConfirm(index);
+    setShowPrimaryConfirm(true);
+  };
+
+  const confirmPrimaryMethod = () => {
+    if (primaryIndexToConfirm === null) return;
+    setMethods(methods.map((method, idx) => ({
+      ...method,
+      is_primary: idx === primaryIndexToConfirm
+    })));
+    const methodName = methods[primaryIndexToConfirm].method_type.replace(/_/g, " ");
+    toast.success(`"${methodName}" is now your primary payment method.`);
+    setShowPrimaryConfirm(false);
+    setPrimaryIndexToConfirm(null);
+  };
 
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -511,127 +542,130 @@ function CreateProfile() {
             </section>
 
             {/* Added Payment Methods */}
-            <section className="rounded-2xl border bg-card p-6 space-y-5">
-              {/* Header */}
-              <div className="flex items-start justify-between">
+            <section className="rounded-2xl border bg-card p-6 space-y-4 shadow-sm">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b pb-4 border-border/60">
                 <div>
-                  <h2 className="font-bold text-foreground flex items-center gap-2">
-                    <CreditCard className="h-4 w-4 text-primary" />
+                  <h2 className="font-bold text-foreground text-lg flex items-center gap-2">
+                    <Sparkles className="h-5 w-5 text-primary animate-pulse" />
                     Added Payment Methods
                   </h2>
                   <p className="text-xs text-muted-foreground mt-1">
-                    The method marked as{" "}
-                    <span className="inline-flex items-center gap-0.5 text-amber-500 font-semibold">
-                      <Star className="h-3 w-3 fill-amber-500" /> Primary
-                    </span>{" "}
-                    will be prioritized on your public profile page.
+                    Mark one method as Primary to feature it prominently on your public profile page.
                   </p>
                 </div>
-                {methods.length > 0 && (
-                  <span className="text-xs font-medium bg-primary/10 text-primary rounded-full px-2.5 py-1">
-                    {methods.length} method{methods.length !== 1 ? "s" : ""}
-                  </span>
+                {methods.length > 0 && !methods.some((m) => m.is_primary) && (
+                  <div className="flex items-center gap-1 text-[11px] font-semibold text-amber-500 bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-500/20 animate-bounce">
+                    <AlertCircle className="h-3 w-3" />
+                    No Primary Set
+                  </div>
                 )}
               </div>
 
               {methods.length === 0 ? (
-                <div className="flex flex-col items-center gap-2 py-10 border border-dashed rounded-xl bg-muted/10 text-muted-foreground">
-                  <CreditCard className="h-8 w-8 opacity-30" />
-                  <p className="text-sm font-medium">No payment methods yet</p>
-                  <p className="text-xs opacity-70">Add one using the form above.</p>
+                <div className="text-sm text-muted-foreground py-10 text-center border rounded-xl border-dashed bg-muted/10 border-border/80 flex flex-col items-center justify-center gap-2">
+                  <Coins className="h-8 w-8 text-muted-foreground/50" />
+                  <span>No payment methods added yet. Add one above.</span>
                 </div>
               ) : (
-                <div className="space-y-3">
+                <div className="grid gap-3">
                   {methods.map((m, i) => {
-                    const isPrimary = m.is_primary;
-                    const typeIcon =
-                      m.method_type === "send_money" ? <Smartphone className="h-5 w-5" /> :
-                      m.method_type === "paybill"    ? <Building2  className="h-5 w-5" /> :
-                                                       <Globe       className="h-5 w-5" />;
-                    const typeColor =
-                      m.method_type === "send_money" ? "bg-emerald-500/10 text-emerald-600" :
-                      m.method_type === "paybill"    ? "bg-blue-500/10 text-blue-600" :
-                                                       "bg-violet-500/10 text-violet-600";
-                    const displayDetail =
-                      m.method_type === "paybill"
-                        ? `${m.paybill_number} · Acct: ${m.account_number}`
-                        : m.account_number;
+                    let MethodIcon = Coins;
+                    let displayType = m.method_type.replace(/_/g, " ");
+                    if (m.method_type === "send_money") {
+                      MethodIcon = Smartphone;
+                      displayType = "M-Pesa Send Money";
+                    } else if (m.method_type === "till") {
+                      MethodIcon = Wallet;
+                      displayType = "M-Pesa Till Number";
+                    } else if (m.method_type === "paybill") {
+                      MethodIcon = Landmark;
+                      displayType = "M-Pesa Paybill";
+                    }
 
                     return (
-                      <label
+                      <div
                         key={i}
-                        htmlFor={`pm-radio-${i}`}
-                        className={`group relative flex items-center gap-4 rounded-2xl border p-4 cursor-pointer transition-all duration-200 ${
-                          isPrimary
-                            ? "border-primary/50 bg-primary/5 shadow-sm shadow-primary/10"
-                            : "border-border bg-background hover:border-muted-foreground/30 hover:bg-muted/30"
+                        onClick={() => handleSetPrimaryRequest(i)}
+                        className={`group relative flex items-center justify-between rounded-xl border p-4 transition-all duration-300 cursor-pointer ${
+                          m.is_primary
+                            ? "border-primary bg-primary/[0.03] shadow-sm shadow-primary/5"
+                            : "border-border/80 hover:border-primary/40 hover:bg-muted/30 hover:scale-[1.01]"
                         }`}
                       >
-                        {/* Primary glow strip */}
-                        {isPrimary && (
-                          <span className="absolute left-0 top-3 bottom-3 w-1 rounded-full bg-primary" />
-                        )}
-
-                        {/* Hidden radio */}
-                        <input
-                          id={`pm-radio-${i}`}
-                          type="radio"
-                          name="primary_method"
-                          checked={isPrimary}
-                          onChange={() =>
-                            setMethods(methods.map((method, idx) => ({
-                              ...method,
-                              is_primary: idx === i,
-                            })))
-                          }
-                          className="sr-only"
-                        />
-
-                        {/* Custom radio ring */}
-                        <span
-                          className={`shrink-0 flex items-center justify-center w-5 h-5 rounded-full border-2 transition-colors ${
-                            isPrimary ? "border-primary" : "border-muted-foreground/40 group-hover:border-muted-foreground"
-                          }`}
-                        >
-                          {isPrimary && (
-                            <span className="w-2.5 h-2.5 rounded-full bg-primary" />
-                          )}
-                        </span>
-
-                        {/* Method type icon */}
-                        <span className={`shrink-0 flex items-center justify-center w-10 h-10 rounded-xl ${typeColor}`}>
-                          {typeIcon}
-                        </span>
-
-                        {/* Info */}
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <span className="font-semibold text-sm text-foreground capitalize">
-                              {m.method_type.replace(/_/g, " ")}
-                              {m.label && m.method_type === "other" ? ` (${m.label})` : ""}
-                            </span>
-                            {isPrimary && (
-                              <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-amber-600 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-full px-2 py-0.5">
-                                <Star className="h-2.5 w-2.5 fill-amber-500" /> Primary
-                              </span>
-                            )}
+                        <div className="flex items-center gap-4">
+                          {/* Checked Indicator */}
+                          <div
+                            className={`flex items-center justify-center w-5 h-5 rounded-full border transition-all ${
+                              m.is_primary
+                                ? "border-primary bg-primary text-primary-foreground scale-110 shadow-sm"
+                                : "border-muted-foreground/30 group-hover:border-primary/60 group-hover:scale-105"
+                            }`}
+                          >
+                            {m.is_primary && <Check className="h-3 w-3 stroke-[3]" />}
                           </div>
-                          <p className="text-xs text-muted-foreground mt-0.5 truncate">
-                            {displayDetail}
-                            {m.account_name ? ` · ${m.account_name}` : ""}
-                          </p>
+
+                          {/* Method Details */}
+                          <div className="flex items-center gap-3">
+                            <div
+                              className={`p-2.5 rounded-lg transition-colors ${
+                                m.is_primary
+                                  ? "bg-primary/10 text-primary"
+                                  : "bg-muted text-muted-foreground group-hover:bg-primary/5 group-hover:text-primary"
+                              }`}
+                            >
+                              <MethodIcon className="h-4 w-4" />
+                            </div>
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <span className="font-bold text-sm text-foreground capitalize">
+                                  {displayType}
+                                </span>
+                                {m.label && m.method_type === "other" && (
+                                  <span className="text-[10px] bg-muted px-1.5 py-0.5 rounded text-muted-foreground font-medium">
+                                    {m.label}
+                                  </span>
+                                )}
+                                {m.is_primary && (
+                                  <span className="flex items-center gap-0.5 text-[9px] font-black tracking-wider uppercase bg-primary text-primary-foreground px-2 py-0.5 rounded-full leading-none scale-90">
+                                    <Star className="h-2 w-2 fill-current" />
+                                    Primary
+                                  </span>
+                                )}
+                              </div>
+                              <div className="text-xs text-muted-foreground mt-1 flex items-center gap-1.5">
+                                <span className="font-mono tracking-tight font-medium text-foreground/80">
+                                  {m.method_type === "paybill"
+                                    ? `Paybill: ${m.paybill_number} · Acct: ${m.account_number}`
+                                    : `${m.account_number}`}
+                                </span>
+                                {m.account_name && (
+                                  <>
+                                    <span className="text-muted-foreground/40">·</span>
+                                    <span className="italic">{m.account_name}</span>
+                                  </>
+                                )}
+                              </div>
+                            </div>
+                          </div>
                         </div>
 
-                        {/* Delete */}
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          className="shrink-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-xl transition-colors"
-                          onClick={(e) => { e.preventDefault(); setMethods(methods.filter((_, idx) => idx !== i)); }}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </label>
+                        {/* Actions */}
+                        <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                          {!m.is_primary && (
+                            <span className="text-[11px] font-medium text-primary opacity-0 group-hover:opacity-100 transition-opacity mr-1 hidden sm:inline-block">
+                              Click to make primary
+                            </span>
+                          )}
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
+                            onClick={() => handleDeleteMethod(i)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
                     );
                   })}
                 </div>
@@ -740,6 +774,59 @@ function CreateProfile() {
         message="Are you sure you want to save these profile updates?"
         confirmLabel="Save Changes"
       />
+
+      {/* Set Primary Payment Method Confirmation Dialog */}
+      <AppDialog
+        open={showPrimaryConfirm}
+        onClose={() => {
+          setShowPrimaryConfirm(false);
+          setPrimaryIndexToConfirm(null);
+        }}
+        variant="confirm"
+        title="Set as Primary Payment Method"
+      >
+        <div className="space-y-4">
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            Are you sure you want to set this payment method as your primary option?
+          </p>
+          {primaryIndexToConfirm !== null && methods[primaryIndexToConfirm] && (
+            <div className="rounded-xl border bg-muted/40 p-4 space-y-2">
+              <div className="font-bold text-sm capitalize text-foreground flex items-center gap-2">
+                {methods[primaryIndexToConfirm].method_type === "send_money" && <Smartphone className="h-4 w-4 text-primary" />}
+                {methods[primaryIndexToConfirm].method_type === "till" && <Wallet className="h-4 w-4 text-primary" />}
+                {methods[primaryIndexToConfirm].method_type === "paybill" && <Landmark className="h-4 w-4 text-primary" />}
+                {methods[primaryIndexToConfirm].method_type === "other" && <Coins className="h-4 w-4 text-primary" />}
+                {methods[primaryIndexToConfirm].method_type.replace(/_/g, " ")}
+              </div>
+              <div className="text-xs text-muted-foreground font-mono">
+                {methods[primaryIndexToConfirm].method_type === "paybill"
+                  ? `Paybill: ${methods[primaryIndexToConfirm].paybill_number} · Acct: ${methods[primaryIndexToConfirm].account_number}`
+                  : methods[primaryIndexToConfirm].account_number}
+                {methods[primaryIndexToConfirm].account_name && ` (${methods[primaryIndexToConfirm].account_name})`}
+              </div>
+            </div>
+          )}
+          <p className="text-xs text-amber-600 dark:text-amber-400 bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/20 font-medium flex items-start gap-1.5">
+            <Sparkles className="h-3.5 w-3.5 text-amber-500 shrink-0 mt-0.5" />
+            <span>This method will be featured at the top of your public profile page for client reference and payments.</span>
+          </p>
+        </div>
+        <div className="flex gap-3 mt-6 justify-end">
+          <Button
+            variant="outline"
+            onClick={() => {
+              setShowPrimaryConfirm(false);
+              setPrimaryIndexToConfirm(null);
+            }}
+          >
+            Cancel
+          </Button>
+          <Button onClick={confirmPrimaryMethod} className="gap-2">
+            <Check className="h-4 w-4" />
+            Yes, Set as Primary
+          </Button>
+        </div>
+      </AppDialog>
 
       {/* Payment Confirmation Dialog (new profile) */}
       {cropImage && (
