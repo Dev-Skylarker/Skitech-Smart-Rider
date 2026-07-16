@@ -48,3 +48,4 @@ QUICK_START.md
 !.env.example
 
 .vercel
+.env*
