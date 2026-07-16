@@ -545,12 +545,11 @@ function CreateProfile() {
             <section className="rounded-2xl border bg-card p-6 space-y-4 shadow-sm">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b pb-4 border-border/60">
                 <div>
-                  <h2 className="font-bold text-foreground text-lg flex items-center gap-2">
-                    <Sparkles className="h-5 w-5 text-primary animate-pulse" />
-                    Added Payment Methods
+                  <h2 className="font-bold text-foreground text-lg">
+                    Select your preferred payment method
                   </h2>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Mark one method as Primary to feature it prominently on your public profile page.
+                    The method marked as Primary will be prioritized on your public profile page.
                   </p>
                 </div>
                 {methods.length > 0 && !methods.some((m) => m.is_primary) && (
@@ -626,8 +625,7 @@ function CreateProfile() {
                                   </span>
                                 )}
                                 {m.is_primary && (
-                                  <span className="flex items-center gap-0.5 text-[9px] font-black tracking-wider uppercase bg-primary text-primary-foreground px-2 py-0.5 rounded-full leading-none scale-90">
-                                    <Star className="h-2 w-2 fill-current" />
+                                  <span className="text-[9px] font-black tracking-wider uppercase bg-primary text-primary-foreground px-2 py-0.5 rounded-full leading-none scale-90">
                                     Primary
                                   </span>
                                 )}
@@ -807,7 +805,7 @@ function CreateProfile() {
             </div>
           )}
           <p className="text-xs text-amber-600 dark:text-amber-400 bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/20 font-medium flex items-start gap-1.5">
-            <Sparkles className="h-3.5 w-3.5 text-amber-500 shrink-0 mt-0.5" />
+            <AlertCircle className="h-3.5 w-3.5 text-amber-500 shrink-0 mt-0.5" />
             <span>This method will be featured at the top of your public profile page for client reference and payments.</span>
           </p>
         </div>
