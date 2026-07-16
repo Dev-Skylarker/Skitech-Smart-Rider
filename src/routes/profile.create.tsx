@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Trash2, Plus, ArrowLeft, CheckCircle2, Pencil } from "lucide-react";
+import { Trash2, Plus, ArrowLeft, CheckCircle2, Pencil, Smartphone, Building2, Globe, Star, CreditCard } from "lucide-react";
 import { PaymentConfirmDialog, ConfirmChangesDialog } from "@/error-handling/dialogs";
 import { fromDbMethodType, type PaymentMethodType } from "@/lib/payment-methods";
 import { replacePaymentMethods, upsertOwnProfile } from "@/lib/profiles";
@@ -511,53 +511,129 @@ function CreateProfile() {
             </section>
 
             {/* Added Payment Methods */}
-            <section className="rounded-2xl border bg-card p-6 space-y-4">
-              <div>
-                <h2 className="font-bold text-foreground">Added Payment Methods</h2>
-                <p className="text-xs text-muted-foreground mt-1">
-                  The method marked as Primary will be prioritized on your public profile page.
-                </p>
+            <section className="rounded-2xl border bg-card p-6 space-y-5">
+              {/* Header */}
+              <div className="flex items-start justify-between">
+                <div>
+                  <h2 className="font-bold text-foreground flex items-center gap-2">
+                    <CreditCard className="h-4 w-4 text-primary" />
+                    Added Payment Methods
+                  </h2>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    The method marked as{" "}
+                    <span className="inline-flex items-center gap-0.5 text-amber-500 font-semibold">
+                      <Star className="h-3 w-3 fill-amber-500" /> Primary
+                    </span>{" "}
+                    will be prioritized on your public profile page.
+                  </p>
+                </div>
+                {methods.length > 0 && (
+                  <span className="text-xs font-medium bg-primary/10 text-primary rounded-full px-2.5 py-1">
+                    {methods.length} method{methods.length !== 1 ? "s" : ""}
+                  </span>
+                )}
               </div>
 
               {methods.length === 0 ? (
-                <div className="text-sm text-muted-foreground py-6 text-center border rounded-xl border-dashed bg-muted/10">
-                  No payment methods added yet. Add one above.
+                <div className="flex flex-col items-center gap-2 py-10 border border-dashed rounded-xl bg-muted/10 text-muted-foreground">
+                  <CreditCard className="h-8 w-8 opacity-30" />
+                  <p className="text-sm font-medium">No payment methods yet</p>
+                  <p className="text-xs opacity-70">Add one using the form above.</p>
                 </div>
               ) : (
                 <div className="space-y-3">
-                  {methods.map((m, i) => (
-                    <div key={i} className="flex items-center justify-between rounded-xl border p-4 bg-background">
-                      <div className="flex items-center gap-4">
-                        <label className="flex flex-col items-center gap-1 cursor-pointer">
-                          <input
-                            type="radio"
-                            name="primary_method"
-                            checked={m.is_primary}
-                            onChange={() => {
-                              setMethods(methods.map((method, idx) => ({
-                                ...method,
-                                is_primary: idx === i
-                              })));
-                            }}
-                            className="accent-primary w-4 h-4"
-                          />
-                          <span className="text-[10px] font-bold text-primary uppercase leading-none">Primary</span>
-                        </label>
-                        <div>
-                          <div className="font-bold text-sm capitalize">
-                            {m.method_type.replace(/_/g, " ")} {m.label && m.method_type === "other" ? `(${m.label})` : ""}
+                  {methods.map((m, i) => {
+                    const isPrimary = m.is_primary;
+                    const typeIcon =
+                      m.method_type === "send_money" ? <Smartphone className="h-5 w-5" /> :
+                      m.method_type === "paybill"    ? <Building2  className="h-5 w-5" /> :
+                                                       <Globe       className="h-5 w-5" />;
+                    const typeColor =
+                      m.method_type === "send_money" ? "bg-emerald-500/10 text-emerald-600" :
+                      m.method_type === "paybill"    ? "bg-blue-500/10 text-blue-600" :
+                                                       "bg-violet-500/10 text-violet-600";
+                    const displayDetail =
+                      m.method_type === "paybill"
+                        ? `${m.paybill_number} · Acct: ${m.account_number}`
+                        : m.account_number;
+
+                    return (
+                      <label
+                        key={i}
+                        htmlFor={`pm-radio-${i}`}
+                        className={`group relative flex items-center gap-4 rounded-2xl border p-4 cursor-pointer transition-all duration-200 ${
+                          isPrimary
+                            ? "border-primary/50 bg-primary/5 shadow-sm shadow-primary/10"
+                            : "border-border bg-background hover:border-muted-foreground/30 hover:bg-muted/30"
+                        }`}
+                      >
+                        {/* Primary glow strip */}
+                        {isPrimary && (
+                          <span className="absolute left-0 top-3 bottom-3 w-1 rounded-full bg-primary" />
+                        )}
+
+                        {/* Hidden radio */}
+                        <input
+                          id={`pm-radio-${i}`}
+                          type="radio"
+                          name="primary_method"
+                          checked={isPrimary}
+                          onChange={() =>
+                            setMethods(methods.map((method, idx) => ({
+                              ...method,
+                              is_primary: idx === i,
+                            })))
+                          }
+                          className="sr-only"
+                        />
+
+                        {/* Custom radio ring */}
+                        <span
+                          className={`shrink-0 flex items-center justify-center w-5 h-5 rounded-full border-2 transition-colors ${
+                            isPrimary ? "border-primary" : "border-muted-foreground/40 group-hover:border-muted-foreground"
+                          }`}
+                        >
+                          {isPrimary && (
+                            <span className="w-2.5 h-2.5 rounded-full bg-primary" />
+                          )}
+                        </span>
+
+                        {/* Method type icon */}
+                        <span className={`shrink-0 flex items-center justify-center w-10 h-10 rounded-xl ${typeColor}`}>
+                          {typeIcon}
+                        </span>
+
+                        {/* Info */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="font-semibold text-sm text-foreground capitalize">
+                              {m.method_type.replace(/_/g, " ")}
+                              {m.label && m.method_type === "other" ? ` (${m.label})` : ""}
+                            </span>
+                            {isPrimary && (
+                              <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-amber-600 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-full px-2 py-0.5">
+                                <Star className="h-2.5 w-2.5 fill-amber-500" /> Primary
+                              </span>
+                            )}
                           </div>
-                          <div className="text-xs text-muted-foreground mt-0.5">
-                            {m.method_type === "paybill" ? `${m.paybill_number} · Acct: ${m.account_number}` : m.account_number}
+                          <p className="text-xs text-muted-foreground mt-0.5 truncate">
+                            {displayDetail}
                             {m.account_name ? ` · ${m.account_name}` : ""}
-                          </div>
+                          </p>
                         </div>
-                      </div>
-                      <Button size="sm" variant="ghost" className="text-destructive hover:text-destructive" onClick={() => setMethods(methods.filter((_, idx) => idx !== i))}>
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  ))}
+
+                        {/* Delete */}
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="shrink-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-xl transition-colors"
+                          onClick={(e) => { e.preventDefault(); setMethods(methods.filter((_, idx) => idx !== i)); }}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </label>
+                    );
+                  })}
                 </div>
               )}
             </section>
