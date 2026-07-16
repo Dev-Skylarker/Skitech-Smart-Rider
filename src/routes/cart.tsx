@@ -111,26 +111,8 @@ function CartPage() {
 
         {items.length === 0 ? (
           <div className="text-center py-20 bg-muted/5 border border-dashed rounded-3xl p-8 max-w-lg mx-auto animate-scale-in">
-            {/* Context-aware Empty Cart SVG Illustration */}
-            <div className="relative w-32 h-32 mx-auto mb-6 flex items-center justify-center">
-              {/* Background glowing circles */}
-              <div className="absolute inset-0 bg-primary/10 rounded-full blur-xl scale-75 animate-pulse" />
-              <div className="absolute top-2 right-2 w-4 h-4 bg-accent/20 rounded-full animate-bounce" style={{ animationDelay: "200ms" }} />
-              <div className="absolute bottom-4 left-2 w-3 h-3 bg-primary/20 rounded-full animate-bounce" style={{ animationDelay: "500ms" }} />
-              
-              {/* Main SVG Art */}
-              <svg className="w-24 h-24 text-primary relative z-10" fill="none" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                {/* Stylized shopping cart */}
-                <path d="M20 30H30L40 70H75L85 38H35" stroke="currentColor" strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round" />
-                {/* Wheels with accent colors */}
-                <circle cx="44" cy="80" r="7.5" fill="none" stroke="currentColor" strokeWidth="4.5" />
-                <circle cx="44" cy="80" r="3" fill="var(--color-accent)" />
-                <circle cx="71" cy="80" r="7.5" fill="none" stroke="currentColor" strokeWidth="4.5" />
-                <circle cx="71" cy="80" r="3" fill="var(--color-accent)" />
-                {/* Floating packages/dots */}
-                <path d="M50 45L46 37H54L50 45Z" fill="currentColor" opacity="0.75" />
-                <rect x="58" y="25" width="10" height="10" rx="2" fill="none" stroke="currentColor" strokeWidth="3" opacity="0.6" />
-              </svg>
+            <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-primary/10 mb-6 text-primary animate-pulse">
+              <ShoppingCart className="h-10 w-10" />
             </div>
             <h2 className="text-2xl font-black mb-2 text-foreground">Your cart is empty</h2>
             <p className="text-muted-foreground text-sm mb-8 max-w-sm mx-auto leading-relaxed">

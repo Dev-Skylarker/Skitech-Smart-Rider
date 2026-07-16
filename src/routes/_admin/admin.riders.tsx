@@ -37,42 +37,13 @@ type Row = {
   qr_slug: string;
   trust_score: number;
   created_at: string;
-  photo_url: string | null;
 };
 
 const PAGE = 25;
 
 function statusBadge(s: string) {
-  if (s === "active") {
-    return (
-      <Badge className="bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 hover:bg-emerald-500/25 flex items-center gap-1.5 w-fit font-semibold shadow-sm">
-        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-status-pulse" />
-        active
-      </Badge>
-    );
-  }
-  if (s === "pending_payment") {
-    return (
-      <Badge className="bg-amber-500/10 text-amber-600 border border-amber-500/20 hover:bg-amber-500/25 flex items-center gap-1.5 w-fit font-semibold shadow-sm animate-pulse">
-        <span className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-status-pulse" />
-        pending payment
-      </Badge>
-    );
-  }
-  if (s === "suspended" || s === "banned") {
-    return (
-      <Badge className="bg-red-500/10 text-red-600 border border-red-500/20 hover:bg-red-500/25 flex items-center gap-1.5 w-fit font-semibold shadow-sm">
-        <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
-        {s}
-      </Badge>
-    );
-  }
-  return (
-    <Badge className="bg-gray-500/10 text-gray-600 border border-gray-500/20 hover:bg-gray-500/25 flex items-center gap-1.5 w-fit font-semibold shadow-sm">
-      <span className="h-1.5 w-1.5 rounded-full bg-gray-500" />
-      {s.replace("_", " ")}
-    </Badge>
-  );
+  const v = s === "active" ? "default" : s === "pending_payment" ? "secondary" : s === "suspended" ? "destructive" : s === "banned" ? "destructive" : "outline";
+  return <Badge variant={v as any}>{s.replace("_", " ")}</Badge>;
 }
 
 function AdminUsers() {
@@ -97,7 +68,7 @@ function AdminUsers() {
     (async () => {
       let query = supabase
         .from("profiles")
-        .select("id,email,full_name,display_name,phone,vehicle_type,plate_number,route,city,bio,trust_score,status,qr_slug,created_at,photo_url", { count: "exact" })
+        .select("id,email,full_name,display_name,phone,vehicle_type,plate_number,route,city,bio,trust_score,status,qr_slug,created_at", { count: "exact" })
         .order("created_at", { ascending: false })
         .range(page * PAGE, page * PAGE + PAGE - 1);
       if (status !== "all") query = query.eq("status", status as any);
@@ -274,40 +245,12 @@ function AdminUsers() {
             {loading ? (
               <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-8"><Loader2 className="h-5 w-5 animate-spin mx-auto mb-2" />Loading…</TableCell></TableRow>
             ) : rows.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={5} className="py-16 text-center">
-                  <div className="max-w-md mx-auto flex flex-col items-center justify-center p-6 bg-muted/5 border border-dashed rounded-2xl animate-scale-in">
-                    <div className="relative w-24 h-24 mb-4 flex items-center justify-center">
-                      <div className="absolute inset-0 bg-primary/10 rounded-full blur-xl scale-75 animate-pulse" />
-                      <svg className="w-16 h-16 text-primary relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} xmlns="http://www.w3.org/2000/svg">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5a2.25 2.25 0 002.25 2.25zm.75-12h3.75c.621 0 1.125.504 1.125 1.125v3.75c0 .621-.504 1.125-1.125 1.125H5.25a1.125 1.125 0 01-1.125-1.125v-3.75c0-.621.504-1.125 1.125-1.125z" />
-                      </svg>
-                    </div>
-                    <h3 className="text-lg font-black text-foreground">No users found</h3>
-                    <p className="text-muted-foreground text-xs mt-1 max-w-xs mx-auto leading-relaxed">
-                      We couldn't find any rider accounts matching your filters or search terms. Try adjusting your query.
-                    </p>
-                  </div>
-                </TableCell>
-              </TableRow>
+              <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-8">No users found</TableCell></TableRow>
             ) : rows.map((r) => (
               <TableRow key={r.id} className="cursor-pointer hover:bg-muted/50 transition-colors" onClick={() => setEditId(r.id)}>
                 <TableCell>
-                  <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-full border bg-muted overflow-hidden flex-shrink-0 flex items-center justify-center">
-                      {r.photo_url ? (
-                        <img src={r.photo_url} alt={r.full_name || "rider"} className="h-full w-full object-cover" />
-                      ) : (
-                        <div className="h-full w-full bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center text-xs font-black text-primary">
-                          {(r.full_name || r.display_name || "U").charAt(0).toUpperCase()}
-                        </div>
-                      )}
-                    </div>
-                    <div className="min-w-0 text-left">
-                      <div className="font-medium text-foreground truncate">{r.full_name || r.display_name || "Unknown"}</div>
-                      <div className="text-xs text-muted-foreground truncate">{r.email || "No email"}</div>
-                    </div>
-                  </div>
+                  <div className="font-medium">{r.full_name || r.display_name || "Unknown"}</div>
+                  <div className="text-xs text-muted-foreground">{r.email || "No email"}</div>
                 </TableCell>
                 <TableCell>{r.phone || "—"}</TableCell>
                 <TableCell>{r.plate_number || "—"}</TableCell>
