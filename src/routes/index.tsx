@@ -88,11 +88,13 @@ function Landing() {
         <div className="mx-auto max-w-5xl px-6 md:px-8 pt-20 pb-20 md:pt-0 md:pb-0">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
             {/* Left Content */}
-            <div className="text-center lg:text-left">
+            <div className="text-center lg:text-left animate-slide-up">
               <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-black leading-tight mb-6">
-                One scan.
+                One scan,
                 <br />
-                <span className="text-primary">Instant payment.</span>
+                <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-gradient-flow inline-block">
+                  your digital identity!
+                </span>
               </h1>
 
               <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mb-8 leading-relaxed">

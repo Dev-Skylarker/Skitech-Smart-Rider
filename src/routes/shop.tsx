@@ -7,7 +7,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { ShoppingCart, ShoppingBag, Package, Plus, ChevronLeft, ChevronRight, X, Lock, ArrowLeft } from "lucide-react";
+import { ShoppingCart, ShoppingBag, Package, Plus, ChevronLeft, ChevronRight, X, Lock, ArrowLeft, ShieldCheck } from "lucide-react";
 
 export const Route = createFileRoute("/shop")({ component: ShopPage });
 
@@ -32,6 +32,7 @@ function ShopPage() {
   const [adding, setAdding] = useState<string | null>(null);
   const [selectedItem, setSelectedItem] = useState<ShopItem | null>(null);
   const [galleryIdx, setGalleryIdx] = useState(0);
+  const [addedItem, setAddedItem] = useState<ShopItem | null>(null);
 
   useEffect(() => {
     if (!loading && !user) nav({ to: "/login", search: { redirect: "/shop" } });
@@ -56,6 +57,7 @@ function ShopPage() {
       return;
     }
     setAdding(itemId);
+    const item = items.find((i) => i.id === itemId);
     const existing = cart.find((c) => c.shop_item_id === itemId);
     if (existing) {
       const { error } = await supabase
@@ -64,7 +66,7 @@ function ShopPage() {
         .eq("id", existing.id);
       if (!error) {
         setCart((c) => c.map((ci) => ci.id === existing.id ? { ...ci, quantity: ci.quantity + 1 } : ci));
-        toast.success("Quantity updated!");
+        if (item) setAddedItem(item);
       }
     } else {
       const { data, error } = await supabase
@@ -74,11 +76,12 @@ function ShopPage() {
         .single();
       if (!error && data) {
         setCart((c) => [...c, data as CartItem]);
-        toast.success("Added to cart!");
+        if (item) setAddedItem(item);
       }
     }
     setAdding(null);
   }
+
 
   const cartCount = cart.reduce((acc, c) => acc + c.quantity, 0);
 
@@ -148,10 +151,26 @@ function ShopPage() {
 
         {/* Items grid */}
         {items.length === 0 ? (
-          <div className="text-center py-20">
-            <Package className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-            <h2 className="text-xl font-bold mb-2">Shop coming soon</h2>
-            <p className="text-muted-foreground text-sm">No items available yet. Check back soon!</p>
+          <div className="text-center py-20 bg-muted/5 border border-dashed rounded-3xl p-8 max-w-lg mx-auto animate-scale-in">
+            <div className="relative w-32 h-32 mx-auto mb-6 flex items-center justify-center">
+              {/* Background glowing circles */}
+              <div className="absolute inset-0 bg-primary/10 rounded-full blur-xl scale-75 animate-pulse" />
+              <div className="absolute top-2 right-6 w-3 h-3 bg-accent/20 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+              
+              {/* SVG package */}
+              <svg className="w-24 h-24 text-primary relative z-10" fill="none" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                {/* Styled package box */}
+                <path d="M50 20L80 32L50 44L20 32L50 20Z" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M20 32V68L50 80V44" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M80 32V68L50 80" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+                {/* Accent band on package */}
+                <path d="M50 44L35 38M50 44V62M50 80V62M35 38V56" stroke="var(--color-accent)" strokeWidth="3" opacity="0.85" />
+              </svg>
+            </div>
+            <h2 className="text-2xl font-black mb-2 text-foreground">Shop Coming Soon</h2>
+            <p className="text-muted-foreground text-sm max-w-xs mx-auto leading-relaxed">
+              No items are available yet. We are stocking smart rider gear and stickers soon. Check back shortly!
+            </p>
           </div>
         ) : (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -160,12 +179,17 @@ function ShopPage() {
               const cartQty = cart.find((c) => c.shop_item_id === item.id)?.quantity ?? 0;
 
               return (
-                <div key={item.id} className="rounded-2xl border bg-card overflow-hidden hover:shadow-xl transition-all group">
+                <div key={item.id} className="rounded-2xl border bg-card overflow-hidden hover:shadow-xl transition-all duration-300 hover:border-primary/40 group">
                   {/* Image */}
                   <div
                     className="h-52 bg-muted overflow-hidden cursor-pointer relative"
                     onClick={() => { setSelectedItem(item); setGalleryIdx(0); }}
                   >
+                    {/* Verified sticker badge */}
+                    <Badge className="absolute top-3 left-3 z-10 bg-accent text-accent-foreground flex items-center gap-1 font-bold text-[10px] shadow-md border-accent/20">
+                      <ShieldCheck className="h-3 w-3" />
+                      Smart Gear
+                    </Badge>
                     {item.cover_image ? (
                       <img
                         src={item.cover_image}
@@ -277,6 +301,67 @@ function ShopPage() {
           </div>
         </div>
       )}
+
+
+      {/* Added to Cart Confirmation Modal */}
+      {addedItem && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300"
+            onClick={() => setAddedItem(null)}
+          />
+          <div className="relative w-full max-w-sm rounded-3xl border bg-card p-6 shadow-2xl overflow-hidden animate-scale-in-bounce">
+            <div className="absolute top-0 inset-x-0 h-1.5 bg-green-500" />
+
+            <div className="text-center mt-2 mb-6">
+              {/* Animated Check Circle */}
+              <div className="mx-auto w-16 h-16 bg-green-500/10 rounded-full flex items-center justify-center mb-4">
+                <svg className="w-10 h-10 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M5 13l4 4L19 7"
+                    className="animate-draw-check"
+                  />
+                </svg>
+              </div>
+              <h2 className="text-xl font-black text-foreground">Added to Cart!</h2>
+              <p className="text-xs text-muted-foreground mt-1">
+                Your item has been added successfully.
+              </p>
+            </div>
+
+            {/* Item Card Preview */}
+            <div className="flex items-center gap-4 rounded-2xl bg-muted/50 border p-4 mb-6">
+              <div className="h-16 w-16 bg-card border rounded-xl overflow-hidden shrink-0">
+                {addedItem.cover_image ? (
+                  <img src={addedItem.cover_image} alt={addedItem.name} className="h-full w-full object-cover" />
+                ) : (
+                  <div className="h-full flex items-center justify-center bg-muted"><Package className="h-6 w-6 text-muted-foreground" /></div>
+                )}
+              </div>
+              <div className="min-w-0 flex-1 text-left">
+                <div className="font-bold text-sm text-foreground truncate">{addedItem.name}</div>
+                <div className="text-xs text-muted-foreground mt-0.5 truncate">{addedItem.description || "No description"}</div>
+                <div className="text-sm font-black text-primary mt-1.5">KES {addedItem.price_kes.toLocaleString()}</div>
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="grid grid-cols-2 gap-3">
+              <Button variant="outline" className="h-11 font-bold text-xs" onClick={() => setAddedItem(null)}>
+                Keep Shopping
+              </Button>
+              <Link to="/cart">
+                <Button className="w-full h-11 font-bold text-xs">
+                  Checkout
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+

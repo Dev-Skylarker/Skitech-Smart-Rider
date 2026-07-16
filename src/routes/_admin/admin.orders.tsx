@@ -37,8 +37,28 @@ type Order = {
 };
 
 function statusBadge(s: string) {
-  const v = s === "paid" ? "default" : s === "shipped" ? "secondary" : s === "pending" ? "outline" : "outline";
-  return <Badge variant={v as any}>{s}</Badge>;
+  if (s === "paid") {
+    return (
+      <Badge className="bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 hover:bg-emerald-500/25 flex items-center gap-1.5 w-fit font-semibold shadow-sm">
+        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-status-pulse" />
+        paid
+      </Badge>
+    );
+  }
+  if (s === "shipped") {
+    return (
+      <Badge className="bg-blue-500/10 text-blue-600 border border-blue-500/20 hover:bg-blue-500/25 flex items-center gap-1.5 w-fit font-semibold shadow-sm">
+        <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
+        shipped
+      </Badge>
+    );
+  }
+  return (
+    <Badge className="bg-amber-500/10 text-amber-600 border border-amber-500/20 hover:bg-amber-500/25 flex items-center gap-1.5 w-fit font-semibold shadow-sm">
+      <span className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-status-pulse" />
+      {s}
+    </Badge>
+  );
 }
 
 function AdminOrders() {
@@ -134,7 +154,22 @@ function AdminOrders() {
             {loading ? (
               <TableRow><TableCell colSpan={7} className="text-center text-muted-foreground py-8">Loading…</TableCell></TableRow>
             ) : orders.length === 0 ? (
-              <TableRow><TableCell colSpan={7} className="text-center text-muted-foreground py-8">No orders</TableCell></TableRow>
+              <TableRow>
+                <TableCell colSpan={7} className="py-16 text-center">
+                  <div className="max-w-md mx-auto flex flex-col items-center justify-center p-6 bg-muted/5 border border-dashed rounded-2xl animate-scale-in">
+                    <div className="relative w-24 h-24 mb-4 flex items-center justify-center">
+                      <div className="absolute inset-0 bg-primary/10 rounded-full blur-xl scale-75 animate-pulse" />
+                      <svg className="w-16 h-16 text-primary relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} xmlns="http://www.w3.org/2000/svg">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m6 4.125l2.25 2.25m0 0l2.25-2.25M12 13.875V7.5M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+                      </svg>
+                    </div>
+                    <h3 className="text-lg font-black text-foreground">No orders found</h3>
+                    <p className="text-muted-foreground text-xs mt-1 max-w-xs mx-auto leading-relaxed">
+                      There are no merchandise or sticker orders matching this status yet. All rider orders will show up here.
+                    </p>
+                  </div>
+                </TableCell>
+              </TableRow>
             ) : orders.map((o) => (
               <TableRow key={o.id}>
                 <TableCell>

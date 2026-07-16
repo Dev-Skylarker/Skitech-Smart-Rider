@@ -24,10 +24,41 @@ import {
   Download,
   ShieldCheck,
   Zap,
+  FileText,
 } from "lucide-react";
 import { toast } from "sonner";
 import { toPng } from "html-to-image";
 import logoImg from "@/assets/logo.png";
+
+// Beautiful smooth ease-out count-up animation component
+function AnimatedCounter({ value, duration = 800 }: { value: number; duration?: number }) {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    let start = 0;
+    const end = value;
+    if (start === end) {
+      setCount(end);
+      return;
+    }
+    const totalMiliseconds = duration;
+    const incrementTime = Math.max(Math.floor(totalMiliseconds / Math.max(end, 1)), 15);
+
+    const timer = setInterval(() => {
+      start += Math.ceil((end - start) / 8);
+      if (start >= end) {
+        clearInterval(timer);
+        setCount(end);
+      } else {
+        setCount(start);
+      }
+    }, incrementTime);
+
+    return () => clearInterval(timer);
+  }, [value, duration]);
+
+  return <>{count.toLocaleString()}</>;
+}
 
 type Profile = {
   id: string;
@@ -120,32 +151,64 @@ function NoProfileView({ userName }: { userName: string }) {
     <div className="animate-fade-in">
       {/* Hero CTA */}
       <div className="rounded-3xl bg-gradient-to-br from-primary via-primary to-secondary text-primary-foreground p-8 md:p-12 overflow-hidden relative mb-8">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-        <div className="absolute bottom-0 left-0 w-48 h-48 bg-black/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+        {/* Abstract background blobs */}
+        <div className="absolute top-0 right-0 w-80 h-80 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-black/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+        
+        {/* Grid pattern overlay inside hero banner */}
+        <div className="absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none" />
 
-        <div className="relative">
-          <div className="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1.5 text-xs font-bold mb-4">
-            <Sparkles className="h-3.5 w-3.5" />
-            Welcome, {userName}!
+        <div className="relative flex flex-col md:flex-row gap-8 items-center justify-between">
+          <div className="max-w-xl text-left">
+            <div className="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1.5 text-xs font-bold mb-4">
+              <Sparkles className="h-3.5 w-3.5" />
+              Welcome, {userName}!
+            </div>
+            <h1 className="text-3xl md:text-4xl font-black leading-tight mb-3">
+              Your digital rider profile awaits
+            </h1>
+            <p className="opacity-90 text-sm md:text-base leading-relaxed mb-6">
+              Create your profile and get a permanent QR code that customers scan to pay you instantly.
+              No typing errors, no hassle — just your money, directly to your wallet.
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <Link to="/profile/create">
+                <Button size="lg" variant="secondary" className="font-bold gap-2 shadow-lg">
+                  Create My Profile
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
+            <div className="mt-6 inline-flex items-center gap-2 bg-white/10 rounded-xl px-4 py-2.5">
+              <span className="text-2xl font-black">KES 100</span>
+              <span className="text-sm opacity-80">one-time profile activation fee</span>
+            </div>
           </div>
-          <h1 className="text-3xl md:text-4xl font-black leading-tight mb-3">
-            Your digital rider profile awaits
-          </h1>
-          <p className="opacity-90 max-w-xl text-sm md:text-base leading-relaxed mb-6">
-            Create your profile and get a permanent QR code that customers scan to pay you instantly.
-            No typing errors, no hassle — just your money, directly to your wallet.
-          </p>
-          <div className="flex flex-wrap gap-3">
-            <Link to="/profile/create">
-              <Button size="lg" variant="secondary" className="font-bold gap-2">
-                Create My Profile
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-            </Link>
-          </div>
-          <div className="mt-6 inline-flex items-center gap-2 bg-white/10 rounded-xl px-4 py-2.5">
-            <span className="text-2xl font-black">KES 100</span>
-            <span className="text-sm opacity-80">one-time profile activation fee</span>
+
+          {/* Floating Sticker Card Visual Graphic (Hidden on mobile) */}
+          <div className="hidden md:flex flex-shrink-0 relative w-60 h-60 items-center justify-center animate-scale-in">
+            {/* Sticker shadow */}
+            <div className="absolute w-[180px] h-[220px] rounded-3xl bg-black/25 blur-xl rotate-[12deg] translate-y-2 translate-x-2" />
+            
+            {/* Floating Sticker container */}
+            <div className="w-[180px] h-[220px] rounded-2.5xl bg-white p-4 shadow-2xl flex flex-col items-center text-black rotate-[12deg] transition-all duration-300 hover:rotate-6 hover:scale-105 border border-white/20">
+              <div className="w-full bg-primary h-6 rounded-t-lg mb-4 flex items-center justify-center text-[8px] font-black text-white uppercase tracking-wider">
+                SMART RIDER
+              </div>
+              {/* QR Code mock vector SVG */}
+              <div className="w-24 h-24 bg-muted border border-muted-foreground/10 rounded-xl p-2 flex items-center justify-center relative overflow-hidden">
+                <svg className="w-full h-full text-foreground opacity-90" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <path d="M3 3h4v4H3zM17 3h4v4H17zM3 17h4v4H3zM8 3h3v3H8zM13 3h2v2h-2zM13 7h2v3h-2zM8 8h3v2H8zM17 9h2v2h-2zM20 9h1v3h-1z" />
+                  <path d="M9 13h2v2H9zM12 13h1v1h-1zM14 13h3v2h-3zM18 13h3v1h-3zM8 16h2v3H8zM12 16h2v2h-2zM15 16h3v1h-3zM15 18h1v3h-1zM17 19h3v1h-3z" />
+                </svg>
+              </div>
+              <div className="mt-3 text-[10px] font-black uppercase text-center text-foreground truncate w-full">
+                {userName || "YOUR NAME"}
+              </div>
+              <div className="text-[7px] text-muted-foreground font-semibold mt-0.5 tracking-wider">
+                SCAN TO PAY RIDER
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -381,7 +444,7 @@ function ActiveView({ profile }: { profile: Profile }) {
 
         {/* QR Code Section */}
         <div className="w-full lg:w-auto flex-shrink-0 flex flex-col items-center lg:items-start justify-center lg:mt-0">
-          <div className="relative">
+          <div className="relative animate-scale-in" style={{ animationDelay: "150ms" }}>
             {/* Sticker container to be exported */}
             <div 
               id="qr-sticker-container"
