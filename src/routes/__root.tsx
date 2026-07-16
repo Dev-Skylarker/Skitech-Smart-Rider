@@ -18,8 +18,8 @@ function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4 relative overflow-hidden">
       {/* Background gradients */}
-      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-background to-secondary/5" />
-      <div className="absolute top-1/4 left-1/4 w-[300px] h-[300px] bg-primary/10 rounded-full blur-3xl animate-pulse" />
+      <div className="absolute inset-0 -z-10 bg-linear-to-br from-primary/5 via-background to-secondary/5" />
+      <div className="absolute top-1/4 left-1/4 w-75 h-75 bg-primary/10 rounded-full blur-3xl animate-pulse" />
       
       <div className="max-w-md w-full rounded-3xl border bg-card p-8 text-center shadow-xl relative animate-scale-in">
         <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-primary/10 mb-6 text-primary animate-bounce">
@@ -61,7 +61,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   const router = useRouter();
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4 relative overflow-hidden">
-      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-destructive/5 via-background to-secondary/5" />
+      <div className="absolute inset-0 -z-10 bg-linear-to-br from-destructive/5 via-background to-secondary/5" />
       
       <div className="max-w-md w-full rounded-3xl border bg-card p-8 text-center shadow-xl relative animate-scale-in">
         <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-destructive/10 mb-6 text-destructive">

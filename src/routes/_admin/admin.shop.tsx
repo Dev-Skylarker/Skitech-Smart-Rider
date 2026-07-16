@@ -218,7 +218,7 @@ function AdminShop() {
                       <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">{item.description}</p>
                     )}
                   </div>
-                  <Badge variant={item.in_stock ? "default" : "outline"} className="flex-shrink-0 text-xs">
+                  <Badge variant={item.in_stock ? "default" : "outline"} className="shrink-0 text-xs">
                     {item.in_stock ? "In stock" : "Out of stock"}
                   </Badge>
                 </div>
@@ -329,7 +329,7 @@ function AdminShop() {
           <div className="flex items-center gap-3">
             <div
               onClick={() => setForm((f) => ({ ...f, in_stock: !f.in_stock }))}
-              className={`w-11 h-6 rounded-full cursor-pointer transition-colors flex-shrink-0 ${form.in_stock ? "bg-primary" : "bg-muted"}`}
+              className={`w-11 h-6 rounded-full cursor-pointer transition-colors shrink-0 ${form.in_stock ? "bg-primary" : "bg-muted"}`}
               role="switch"
               aria-checked={form.in_stock}
             >

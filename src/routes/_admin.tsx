@@ -116,9 +116,9 @@ function AdminLayout() {
         <div className="flex-1 flex flex-col min-w-0">
           <header className="h-14 flex items-center justify-between border-b px-4 md:px-6 bg-background/95 backdrop-blur sticky top-0 z-30">
             <div className="flex items-center gap-3 min-w-0">
-              <SidebarTrigger className="flex-shrink-0" />
+              <SidebarTrigger className="shrink-0" />
               {/* Logo — clicks stay in admin panel */}
-              <Link to="/admin" className="flex items-center gap-2 flex-shrink-0 md:hidden">
+              <Link to="/admin" className="flex items-center gap-2 shrink-0 md:hidden">
                 <img
                   src={logoImg}
                   alt="Skitech Smart Rider"
