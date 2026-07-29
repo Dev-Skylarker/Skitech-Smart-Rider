@@ -30,7 +30,7 @@ export function AdminSidebar() {
           <img
             src={logoImg}
             alt="Logo"
-            className="h-7 w-7 flex-shrink-0 rounded-full object-cover"
+            className="h-7 w-7 shrink-0 rounded-full object-cover"
             onError={(e) => ((e.target as HTMLImageElement).style.display = "none")}
           />
           <span className="font-black text-xs leading-tight overflow-hidden whitespace-nowrap">

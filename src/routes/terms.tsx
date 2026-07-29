@@ -100,7 +100,7 @@ function TermsPage() {
 
       <main className="flex-1">
         {/* Hero */}
-        <section className="bg-gradient-to-br from-primary/10 via-background to-secondary/5 py-16 border-b">
+        <section className="bg-linear-to-br from-primary/10 via-background to-secondary/5 py-16 border-b">
           <div className="mx-auto max-w-4xl px-4 md:px-8 text-center">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 mb-6">
               <Scale className="h-8 w-8 text-primary" />
@@ -124,7 +124,7 @@ function TermsPage() {
               style={{ animationDelay: `${i * 0.05}s` }}
             >
               <div className="flex items-center gap-3 p-6 border-b bg-muted/20">
-                <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                <div className="shrink-0 w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
                   <section.icon className="h-5 w-5 text-primary" />
                 </div>
                 <h2 className="text-lg font-bold text-foreground">{section.title}</h2>
@@ -140,7 +140,7 @@ function TermsPage() {
           ))}
 
           {/* Contact */}
-          <div className="rounded-2xl bg-gradient-to-r from-primary to-secondary text-primary-foreground p-8 text-center">
+          <div className="rounded-2xl bg-linear-to-r from-primary to-secondary text-primary-foreground p-8 text-center">
             <h3 className="text-xl font-bold mb-2">Questions about these terms?</h3>
             <p className="opacity-90 text-sm mb-4">
               Contact our support team and we'll be happy to clarify anything.

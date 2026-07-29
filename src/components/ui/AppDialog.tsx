@@ -67,7 +67,7 @@ export function AppDialog({
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+      className="fixed inset-0 z-100 flex items-center justify-center p-4"
       role="dialog"
       aria-modal="true"
       aria-labelledby="dialog-title"
@@ -95,7 +95,7 @@ export function AppDialog({
         <div className="p-6">
           {/* Header */}
           <div className="flex items-start gap-4 mb-4">
-            <div className={`flex-shrink-0 w-10 h-10 rounded-full ${config.bg} flex items-center justify-center`}>
+            <div className={`shrink-0 w-10 h-10 rounded-full ${config.bg} flex items-center justify-center`}>
               <Icon className={`h-5 w-5 ${config.iconColor}`} />
             </div>
             <div className="flex-1 min-w-0">
@@ -114,7 +114,7 @@ export function AppDialog({
             {showClose && (
               <button
                 onClick={onClose}
-                className="flex-shrink-0 rounded-lg p-1 hover:bg-muted transition-colors"
+                className="shrink-0 rounded-lg p-1 hover:bg-muted transition-colors"
                 aria-label="Close dialog"
               >
                 <X className="h-4 w-4 text-muted-foreground" />

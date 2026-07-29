@@ -247,7 +247,7 @@ function AdminLayout() {
                             to="/admin/riders"
                             search={{ status: "all" }}
                             onClick={() => setSearchOpen(false)}
-                            className="p-3 hover:bg-muted/40 transition-colors flex justify-between items-center text-xs block text-left"
+                            className="p-3 hover:bg-muted/40 transition-colors flex justify-between items-center text-xs text-left"
                           >
                             <div>
                               <div className="font-bold text-foreground">{r.full_name || r.display_name || "Unnamed"}</div>
@@ -270,7 +270,7 @@ function AdminLayout() {
                             to="/admin/orders"
                             search={{ status: o.status }}
                             onClick={() => setSearchOpen(false)}
-                            className="p-3 hover:bg-muted/40 transition-colors flex justify-between items-center text-xs block text-left"
+                            className="p-3 hover:bg-muted/40 transition-colors flex justify-between items-center text-xs text-left"
                           >
                             <div>
                               <div className="font-bold text-foreground">Order: {o.id.substring(0, 8)}…</div>

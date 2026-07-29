@@ -240,7 +240,7 @@ function AdminOverview() {
       {/* Analytics Charts */}
       <div className="grid gap-6 md:grid-cols-3">
         {/* Signups & Revenue Area Chart */}
-        <div className="md:col-span-2 rounded-2xl border bg-card p-6 space-y-4 shadow-sm flex flex-col min-h-[350px]">
+        <div className="md:col-span-2 rounded-2xl border bg-card p-6 space-y-4 shadow-sm flex flex-col min-h-87.5">
           <div>
             <h2 className="font-bold text-base text-foreground flex items-center gap-1.5">
               <Sparkles className="h-4 w-4 text-primary" />
@@ -248,7 +248,7 @@ function AdminOverview() {
             </h2>
             <p className="text-xs text-muted-foreground mt-0.5">Performance over the past 7 days</p>
           </div>
-          <div className="flex-1 w-full min-h-[240px]">
+          <div className="flex-1 w-full min-h-60">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={m.chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
@@ -282,12 +282,12 @@ function AdminOverview() {
         </div>
 
         {/* Rider Status Breakdown Doughnut Chart */}
-        <div className="rounded-2xl border bg-card p-6 space-y-4 shadow-sm flex flex-col min-h-[350px]">
+        <div className="rounded-2xl border bg-card p-6 space-y-4 shadow-sm flex flex-col min-h-87.5">
           <div>
             <h2 className="font-bold text-base text-foreground">Rider Statuses</h2>
             <p className="text-xs text-muted-foreground mt-0.5">Breakdown of registered riders</p>
           </div>
-          <div className="flex-1 w-full min-h-[200px] flex items-center justify-center relative">
+          <div className="flex-1 w-full min-h-50 flex items-center justify-center relative">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie

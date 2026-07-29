@@ -16,9 +16,11 @@ export type Database = {
           full_name: string | null
           display_name: string | null
           phone: string | null
+          profile_type: 'rider' | 'car' | 'merchant' | string
           vehicle_type: string | null
           plate_number: string | null
           route: string | null
+          location: string | null
           city: string | null
           bio: string | null
           photo_url: string | null
@@ -34,9 +36,11 @@ export type Database = {
           full_name?: string | null
           display_name?: string | null
           phone?: string | null
+          profile_type?: 'rider' | 'car' | 'merchant' | string
           vehicle_type?: string | null
           plate_number?: string | null
           route?: string | null
+          location?: string | null
           city?: string | null
           bio?: string | null
           photo_url?: string | null
@@ -52,9 +56,11 @@ export type Database = {
           full_name?: string | null
           display_name?: string | null
           phone?: string | null
+          profile_type?: 'rider' | 'car' | 'merchant' | string
           vehicle_type?: string | null
           plate_number?: string | null
           route?: string | null
+          location?: string | null
           city?: string | null
           bio?: string | null
           photo_url?: string | null

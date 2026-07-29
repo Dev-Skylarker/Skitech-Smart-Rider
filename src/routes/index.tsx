@@ -80,9 +80,9 @@ function Landing() {
       <section className="relative min-h-[90vh] flex items-center overflow-hidden">
         {/* Animated background */}
         <div className="absolute inset-0 -z-10">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-secondary/5" />
-          <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/10 rounded-full blur-3xl animate-pulse" style={{ transform: 'translate(30%, -30%)' }} />
-          <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-secondary/10 rounded-full blur-3xl animate-pulse" style={{ transform: 'translate(-30%, 30%)', animationDelay: '1s' }} />
+          <div className="absolute inset-0 bg-linear-to-br from-primary/5 via-background to-secondary/5" />
+          <div className="absolute top-0 right-0 w-200 h-200 bg-primary/10 rounded-full blur-3xl animate-pulse" style={{ transform: 'translate(30%, -30%)' }} />
+          <div className="absolute bottom-0 left-0 w-150 h-150 bg-secondary/10 rounded-full blur-3xl animate-pulse" style={{ transform: 'translate(-30%, 30%)', animationDelay: '1s' }} />
         </div>
 
         <div className="mx-auto max-w-5xl px-6 md:px-8 pt-20 pb-20 md:pt-0 md:pb-0">
@@ -134,10 +134,10 @@ function Landing() {
             <div className="flex justify-center lg:justify-end">
               <div className="relative">
                 {/* Glow effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 blur-3xl scale-110 animate-pulse" />
+                <div className="absolute inset-0 bg-linear-to-r from-primary/20 to-secondary/20 blur-3xl scale-110 animate-pulse" />
 
                 {/* Main sticker card */}
-                <div className="relative w-[320px] sm:w-[380px] aspect-square rounded-3xl bg-gradient-to-br from-primary to-primary/90 p-6 shadow-2xl transform hover:scale-105 transition-transform duration-500 light-theme-forced">
+                <div className="relative w-[320px] sm:w-95 aspect-square rounded-3xl bg-linear-to-br from-primary to-primary/90 p-6 shadow-2xl transform hover:scale-105 transition-transform duration-500 light-theme-forced">
                   {/* Decorative waves */}
                   <svg className="absolute inset-0 w-full h-full opacity-90" viewBox="0 0 380 380" preserveAspectRatio="none">
                     <path d="M0,280 C120,220 240,320 380,250 L380,380 L0,380 Z" fill="var(--secondary)" />
@@ -157,7 +157,7 @@ function Landing() {
 
                   {/* QR Area */}
                   <div className="relative rounded-2xl bg-white p-4 shadow-lg mb-4">
-                    <div className="aspect-square w-full rounded-lg bg-gradient-to-br from-muted/50 to-muted grid place-items-center">
+                    <div className="aspect-square w-full rounded-lg bg-linear-to-br from-muted/50 to-muted grid place-items-center">
                       <QrCode className="h-28 w-28 sm:h-32 sm:w-32 text-foreground/80" />
                     </div>
                   </div>
@@ -355,8 +355,8 @@ function Landing() {
           </div>
 
           <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-3xl blur-3xl" />
-            <div className="relative min-h-[300px] flex flex-col justify-between rounded-3xl border bg-card p-8 shadow-xl">
+            <div className="absolute inset-0 bg-linear-to-r from-primary/10 to-secondary/10 rounded-3xl blur-3xl" />
+            <div className="relative min-h-75 flex flex-col justify-between rounded-3xl border bg-card p-8 shadow-xl">
               {/* Dynamic Animated Card */}
               <div key={currentIndex} className={`flex-1 flex flex-col justify-between ${animClass}`}>
                 <div>
@@ -454,7 +454,7 @@ function Landing() {
 
       {/* CTA Section */}
       <section className="mx-auto max-w-5xl px-6 md:px-8 py-20">
-        <div className="rounded-3xl bg-gradient-to-r from-primary to-primary/80 p-10 md:p-16 text-center shadow-2xl">
+        <div className="rounded-3xl bg-linear-to-r from-primary to-primary/80 p-10 md:p-16 text-center shadow-2xl">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-primary-foreground mb-4">
             Ready to simplify getting paid?
           </h2>

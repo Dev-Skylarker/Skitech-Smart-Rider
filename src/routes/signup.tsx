@@ -126,7 +126,7 @@ function Signup() {
           {/* Card */}
           <div className="rounded-3xl border bg-card shadow-xl overflow-hidden">
             {/* Top accent */}
-            <div className="h-1.5 w-full bg-gradient-to-r from-primary to-secondary" />
+            <div className="h-1.5 w-full bg-linear-to-r from-primary to-secondary" />
 
             <div className="p-8">
               {/* Header */}
@@ -242,7 +242,7 @@ function Signup() {
 
                 {/* Terms checkbox */}
                 <div className="flex items-start gap-3 pt-1">
-                  <div className="relative flex-shrink-0 mt-0.5">
+                  <div className="relative shrink-0 mt-0.5">
                     <input
                       id="signup-terms"
                       type="checkbox"

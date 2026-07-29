@@ -27,7 +27,7 @@ export function SiteHeader() {
             <img
               src={logoImg}
               alt="Skitech Smart Rider Logo"
-              className="h-8 w-8 flex-shrink-0 rounded-full object-cover"
+              className="h-8 w-8 shrink-0 rounded-full object-cover"
               onError={(e) => {
                 (e.target as HTMLImageElement).style.display = "none";
               }}
@@ -98,7 +98,7 @@ export function SiteHeader() {
                   <span className="sr-only">Menu</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[280px] sm:w-[320px] bg-card">
+              <SheetContent side="right" className="w-70 sm:w-[320px] bg-card">
                 <SheetHeader className="text-left border-b pb-4 mb-4">
                   <SheetTitle className="flex items-center gap-2">
                     <img src={logoImg} alt="Logo" className="h-7 w-7 rounded-full object-cover" onError={(e) => ((e.target as HTMLImageElement).style.display = "none")} />

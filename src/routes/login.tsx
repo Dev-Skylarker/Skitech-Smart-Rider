@@ -75,7 +75,7 @@ function Login() {
             <ArrowLeft className="mr-2 h-4 w-4" /> Back to Home
           </Link>
           <div className="rounded-3xl border bg-card shadow-xl overflow-hidden">
-            <div className="h-1.5 w-full bg-gradient-to-r from-primary to-secondary" />
+            <div className="h-1.5 w-full bg-linear-to-r from-primary to-secondary" />
 
             <div className="p-8">
               <div className="text-center mb-8">

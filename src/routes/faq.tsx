@@ -125,7 +125,7 @@ function FAQPage() {
 
         {/* Still Have Questions CTA */}
         <div className="mt-16 rounded-3xl border bg-card p-8 text-center shadow-lg relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-secondary/5 -z-10" />
+          <div className="absolute inset-0 bg-linear-to-br from-primary/5 via-background to-secondary/5 -z-10" />
           <h2 className="text-xl sm:text-2xl font-black text-foreground mb-2">Still have questions?</h2>
           <p className="text-muted-foreground text-sm max-w-md mx-auto mb-6 leading-relaxed">
             If you couldn't find the answers in our FAQ, please get in touch with our team.

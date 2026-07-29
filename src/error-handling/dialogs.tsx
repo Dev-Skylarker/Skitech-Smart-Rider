@@ -111,7 +111,7 @@ export function PaymentConfirmDialog({
             <div className="text-sm text-muted-foreground">Profile activation fee</div>
             <div className="text-2xl font-black text-primary">KES {amount}</div>
           </div>
-          <div className="text-xs text-muted-foreground text-right max-w-[160px]">
+          <div className="text-xs text-muted-foreground text-right max-w-40">
             One-time payment to activate your public profile
           </div>
         </div>

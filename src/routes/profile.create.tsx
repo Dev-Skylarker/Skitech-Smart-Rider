@@ -587,7 +587,7 @@ function CreateProfile() {
                         onClick={() => handleSetPrimaryRequest(i)}
                         className={`group relative flex items-center justify-between rounded-xl border p-4 transition-all duration-300 cursor-pointer ${
                           m.is_primary
-                            ? "border-primary bg-primary/[0.03] shadow-sm shadow-primary/5"
+                            ? "border-primary bg-primary/3 shadow-sm shadow-primary/5"
                             : "border-border/80 hover:border-primary/40 hover:bg-muted/30 hover:scale-[1.01]"
                         }`}
                       >
@@ -600,7 +600,7 @@ function CreateProfile() {
                                 : "border-muted-foreground/30 group-hover:border-primary/60 group-hover:scale-105"
                             }`}
                           >
-                            {m.is_primary && <Check className="h-3 w-3 stroke-[3]" />}
+                            {m.is_primary && <Check className="h-3 w-3 stroke-3" />}
                           </div>
 
                           {/* Method Details */}
@@ -828,7 +828,7 @@ function CreateProfile() {
 
       {/* Payment Confirmation Dialog (new profile) */}
       {cropImage && (
-        <div className="fixed inset-0 z-[100] flex flex-col bg-background/95 backdrop-blur-sm p-4 sm:p-8 animate-in fade-in zoom-in-95">
+        <div className="fixed inset-0 z-100 flex flex-col bg-background/95 backdrop-blur-sm p-4 sm:p-8 animate-in fade-in zoom-in-95">
           <div className="relative flex-1 bg-black rounded-2xl overflow-hidden mb-4 shadow-2xl">
             <Cropper
               image={cropImage}
@@ -842,10 +842,10 @@ function CreateProfile() {
             />
           </div>
           <div className="flex gap-4 items-center justify-center">
-            <Button variant="outline" size="lg" className="w-full max-w-[200px]" onClick={() => setCropImage(null)}>
+            <Button variant="outline" size="lg" className="w-full max-w-50" onClick={() => setCropImage(null)}>
               Cancel
             </Button>
-            <Button size="lg" className="w-full max-w-[200px]" onClick={confirmCrop}>
+            <Button size="lg" className="w-full max-w-50" onClick={confirmCrop}>
               Confirm Crop
             </Button>
           </div>

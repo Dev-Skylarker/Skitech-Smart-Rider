@@ -195,7 +195,7 @@ function PublicQR() {
         {/* Main profile card */}
         <div className="rounded-3xl border bg-card shadow-2xl overflow-hidden mb-4">
           {/* Hero banner */}
-          <div className="relative h-28 bg-gradient-to-r from-primary to-secondary overflow-hidden flex-shrink-0">
+          <div className="relative h-28 bg-linear-to-r from-primary to-secondary overflow-hidden shrink-0">
             <svg className="absolute inset-0 w-full h-full opacity-20" viewBox="0 0 400 112" preserveAspectRatio="none">
               <path d="M0,56 Q100,20 200,56 T400,56 L400,112 L0,112 Z" fill="white" />
             </svg>
@@ -213,11 +213,11 @@ function PublicQR() {
           <div className="px-6 pb-6">
             {/* Avatar + name */}
             <div className="flex flex-col items-center -mt-14 mb-4 relative z-10">
-              <div className="h-24 w-24 rounded-full bg-card border-4 border-primary shadow-xl overflow-hidden flex-shrink-0">
+              <div className="h-24 w-24 rounded-full bg-card border-4 border-primary shadow-xl overflow-hidden shrink-0">
                 {profile.photo_url ? (
                   <img src={profile.photo_url} alt={riderName} className="h-full w-full object-cover" />
                 ) : (
-                  <div className="h-full w-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-primary-foreground">
+                  <div className="h-full w-full bg-linear-to-br from-primary to-secondary flex items-center justify-center text-primary-foreground">
                     <span className="text-4xl font-black">{riderName.charAt(0).toUpperCase()}</span>
                   </div>
                 )}
@@ -314,7 +314,7 @@ function PublicQR() {
                                 : primaryPayment.account_number || "",
                               primaryPayment.id
                             )}
-                            className="flex-shrink-0 rounded-xl bg-primary text-primary-foreground p-2.5 active:scale-95 transition-transform shadow-md"
+                            className="shrink-0 rounded-xl bg-primary text-primary-foreground p-2.5 active:scale-95 transition-transform shadow-md"
                             aria-label="Copy number"
                           >
                             {copied === primaryPayment.id
@@ -343,7 +343,7 @@ function PublicQR() {
                           </div>
                           <button
                             onClick={() => copyToClipboard(primaryPayment.account_number || "", primaryPayment.id)}
-                            className="flex-shrink-0 rounded-xl bg-primary text-primary-foreground p-2.5 active:scale-95 transition-transform shadow-md"
+                            className="shrink-0 rounded-xl bg-primary text-primary-foreground p-2.5 active:scale-95 transition-transform shadow-md"
                             aria-label="Copy account number"
                           >
                             {copied === primaryPayment.id
@@ -400,7 +400,7 @@ function PublicQR() {
                                   m.method_type === "paybill" ? `${m.paybill_number}` : m.account_number || "",
                                   m.id
                                 )}
-                                className="flex-shrink-0 rounded-lg border border-primary/30 bg-primary/10 text-primary p-2 active:scale-95 transition-transform"
+                                className="shrink-0 rounded-lg border border-primary/30 bg-primary/10 text-primary p-2 active:scale-95 transition-transform"
                                 aria-label="Copy number"
                               >
                                 {copied === m.id ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}

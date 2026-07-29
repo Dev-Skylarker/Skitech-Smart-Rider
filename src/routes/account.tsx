@@ -144,7 +144,7 @@ function AccountPage() {
 
     return (
       <div className="bg-card border rounded-xl p-6 flex flex-col sm:flex-row items-center sm:items-start gap-4">
-        <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
+        <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
           <ShieldAlert className="h-6 w-6" />
         </div>
         <div className="text-center sm:text-left flex-1">

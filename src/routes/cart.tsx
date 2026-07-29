@@ -143,7 +143,7 @@ function CartPage() {
                 return (
                   <div key={item.id} className="rounded-2xl border bg-card p-4 flex items-center gap-4">
                     {/* Image */}
-                    <div className="h-20 w-20 rounded-xl bg-muted overflow-hidden flex-shrink-0">
+                    <div className="h-20 w-20 rounded-xl bg-muted overflow-hidden shrink-0">
                       {shopItem.cover_image ? (
                         <img src={shopItem.cover_image} alt={shopItem.name} className="h-full w-full object-cover" />
                       ) : (
@@ -160,7 +160,7 @@ function CartPage() {
                     </div>
 
                     {/* Quantity controls */}
-                    <div className="flex items-center gap-2 flex-shrink-0">
+                    <div className="flex items-center gap-2 shrink-0">
                       <Button
                         size="icon"
                         variant="outline"
@@ -208,7 +208,7 @@ function CartPage() {
                   {items.map((item) => (
                     <div key={item.id} className="flex justify-between">
                       <span className="truncate flex-1 mr-2">{item.shop_items?.name} × {item.quantity}</span>
-                      <span className="font-medium text-foreground flex-shrink-0">
+                      <span className="font-medium text-foreground shrink-0">
                         KES {((item.shop_items?.price_kes ?? 0) * item.quantity).toLocaleString()}
                       </span>
                     </div>
