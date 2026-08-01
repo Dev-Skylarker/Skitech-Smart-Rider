@@ -37,7 +37,7 @@ const profileSchema = z.object({
   first_name: z.string().trim().min(2, "First name too short").max(40),
   surname: z.string().trim().min(2, "Surname too short").max(40),
   display_name: z.string().trim().max(60).optional().or(z.literal("")),
-  phone: z.string().trim().regex(/^07\d{8}$/, "Phone number must be 10 digits starting with 07"),
+  phone: z.string().trim().regex(/^\d{10}$/, "Phone number must be 10 digits"),
   vehicle_type: z.string().min(2).max(40),
   plate_number: z.string().trim().min(3, "Enter a valid plate number").max(20),
   route: z.string().trim().min(2, "Enter your route").max(100),
@@ -350,7 +350,7 @@ function CreateProfile() {
                   <Input 
                     value={data.phone} 
                     onChange={(e) => setData({ ...data, phone: e.target.value.replace(/\D/g, '').slice(0, 10) })} 
-                    placeholder="07XXXXXXXX" 
+                    placeholder="0XXXXXXXXX" 
                     maxLength={10}
                   />
                 </div>
@@ -436,7 +436,7 @@ function CreateProfile() {
                       <Input 
                         value={newMethod.account_number} 
                         onChange={(e) => setNewMethod({ ...newMethod, account_number: e.target.value.replace(/\D/g, '').slice(0, 10) })} 
-                        placeholder="07XXXXXXXX"
+                        placeholder="0XXXXXXXXX"
                         maxLength={10} 
                       />
                     </div>
@@ -497,7 +497,7 @@ function CreateProfile() {
                       <Input 
                         value={newMethod.account_number} 
                         onChange={(e) => setNewMethod({ ...newMethod, account_number: e.target.value.replace(/\D/g, '').slice(0, 10) })} 
-                        placeholder="07XXXXXXXX"
+                        placeholder="0XXXXXXXXX"
                         maxLength={10} 
                       />
                     </div>
