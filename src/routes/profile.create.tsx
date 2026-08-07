@@ -100,6 +100,26 @@ function CreateProfile() {
   const [primaryIndexToConfirm, setPrimaryIndexToConfirm] = useState<number | null>(null);
   const [showPrimaryConfirm, setShowPrimaryConfirm] = useState(false);
 
+  // Inline-edit state for existing payment methods
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [editDraft, setEditDraft] = useState<PM | null>(null);
+
+  // Returns true if another method (excluding `selfIndex`) already has the same
+  // method_type + key number (account_number or paybill_number).
+  function isDuplicatePM(candidate: PM, selfIndex: number | null = null): boolean {
+    return methods.some((m, i) => {
+      if (i === selfIndex) return false;
+      if (m.method_type !== candidate.method_type) return false;
+      if (candidate.method_type === "paybill") {
+        return (
+          m.paybill_number === candidate.paybill_number &&
+          m.account_number === candidate.account_number
+        );
+      }
+      return m.account_number === candidate.account_number;
+    });
+  }
+
   useEffect(() => {
     if (!loading && !user) nav({ to: "/login", search: { redirect: "/profile/create" } });
   }, [loading, user, nav]);
@@ -575,7 +595,8 @@ function CreateProfile() {
                   if (newMethod.method_type === "other" && !newMethod.label) return toast.error("Method Name is required");
                   if (!newMethod.account_number && newMethod.method_type !== "paybill") return toast.error("Number/Account is required");
                   if (newMethod.method_type === "paybill" && (!newMethod.paybill_number || !newMethod.account_number)) return toast.error("Paybill number and Account number are required");
-                  
+                  if (isDuplicatePM(newMethod)) return toast.error("A payment method with these details already exists.");
+
                   const isFirst = methods.length === 0;
                   setMethods([...methods, { ...newMethod, is_primary: isFirst }]);
                   setNewMethod(emptyPM());
@@ -626,6 +647,166 @@ function CreateProfile() {
                       displayType = "M-Pesa Paybill";
                     }
 
+                    const isEditing = editingIndex === i;
+
+                    // ── Inline edit form ──────────────────────────────────
+                    if (isEditing && editDraft) {
+                      return (
+                        <div
+                          key={i}
+                          className="rounded-xl border border-primary/40 bg-primary/3 p-4 space-y-3 shadow-sm"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          {/* Header */}
+                          <div className="flex items-center gap-2 pb-2 border-b border-border/50">
+                            <div className="p-2 rounded-lg bg-primary/10 text-primary">
+                              <MethodIcon className="h-4 w-4" />
+                            </div>
+                            <span className="font-bold text-sm text-foreground capitalize">{displayType}</span>
+                            {editDraft.is_primary && (
+                              <span className="text-[9px] font-black tracking-wider uppercase bg-primary text-primary-foreground px-2 py-0.5 rounded-full leading-none ml-1">
+                                Primary
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Editable fields */}
+                          <div className="grid sm:grid-cols-2 gap-3">
+                            {/* Account / Recipient name — editable for all types */}
+                            {editDraft.method_type !== "other" && (
+                              <div className="space-y-1">
+                                <Label className="text-xs">Name</Label>
+                                <Input
+                                  value={editDraft.account_name}
+                                  onChange={(e) => setEditDraft({ ...editDraft, account_name: e.target.value })}
+                                  maxLength={80}
+                                  className="h-8 text-sm"
+                                />
+                              </div>
+                            )}
+                            {editDraft.method_type === "other" && (
+                              <div className="space-y-1">
+                                <Label className="text-xs">Method Label</Label>
+                                <Input
+                                  value={editDraft.label}
+                                  onChange={(e) => setEditDraft({ ...editDraft, label: e.target.value })}
+                                  maxLength={40}
+                                  className="h-8 text-sm"
+                                />
+                              </div>
+                            )}
+                            {editDraft.method_type === "other" && (
+                              <div className="space-y-1">
+                                <Label className="text-xs">Recipient Name</Label>
+                                <Input
+                                  value={editDraft.account_name}
+                                  onChange={(e) => setEditDraft({ ...editDraft, account_name: e.target.value })}
+                                  maxLength={80}
+                                  className="h-8 text-sm"
+                                />
+                              </div>
+                            )}
+                            {/* Account number — all except paybill show this */}
+                            {editDraft.method_type !== "paybill" && (
+                              <div className="space-y-1">
+                                <Label className="text-xs">
+                                  {editDraft.method_type === "send_money" || editDraft.method_type === "pochi_la_biashara"
+                                    ? "Phone Number"
+                                    : editDraft.method_type === "till"
+                                    ? "Till Number"
+                                    : "Account / ID"}
+                                </Label>
+                                <Input
+                                  value={editDraft.account_number}
+                                  onChange={(e) => {
+                                    const val =
+                                      editDraft.method_type === "send_money" ||
+                                      editDraft.method_type === "pochi_la_biashara"
+                                        ? e.target.value.replace(/\D/g, "").slice(0, 10)
+                                        : e.target.value;
+                                    setEditDraft({ ...editDraft, account_number: val });
+                                  }}
+                                  maxLength={
+                                    editDraft.method_type === "send_money" ||
+                                    editDraft.method_type === "pochi_la_biashara"
+                                      ? 10
+                                      : 40
+                                  }
+                                  className="h-8 text-sm font-mono"
+                                />
+                              </div>
+                            )}
+                            {/* Paybill specific */}
+                            {editDraft.method_type === "paybill" && (
+                              <>
+                                <div className="space-y-1">
+                                  <Label className="text-xs">Paybill No.</Label>
+                                  <Input
+                                    value={editDraft.paybill_number}
+                                    onChange={(e) => setEditDraft({ ...editDraft, paybill_number: e.target.value })}
+                                    maxLength={20}
+                                    className="h-8 text-sm font-mono"
+                                  />
+                                </div>
+                                <div className="space-y-1">
+                                  <Label className="text-xs">Account No.</Label>
+                                  <Input
+                                    value={editDraft.account_number}
+                                    onChange={(e) => setEditDraft({ ...editDraft, account_number: e.target.value })}
+                                    maxLength={40}
+                                    className="h-8 text-sm font-mono"
+                                  />
+                                </div>
+                              </>
+                            )}
+                          </div>
+
+                          {/* Save / Cancel */}
+                          <div className="flex gap-2 pt-1">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="flex-1 h-8 text-xs"
+                              onClick={() => { setEditingIndex(null); setEditDraft(null); }}
+                            >
+                              Cancel
+                            </Button>
+                            <Button
+                              size="sm"
+                              className="flex-1 h-8 text-xs font-bold gap-1"
+                              onClick={() => {
+                                if (!editDraft) return;
+                                // Validate required fields
+                                if (editDraft.method_type !== "other" && !editDraft.account_name.trim())
+                                  return toast.error("Name is required");
+                                if (editDraft.method_type === "other" && !editDraft.label.trim())
+                                  return toast.error("Method label is required");
+                                if (!editDraft.account_number.trim() && editDraft.method_type !== "paybill")
+                                  return toast.error("Account/Number is required");
+                                if (
+                                  editDraft.method_type === "paybill" &&
+                                  (!editDraft.paybill_number.trim() || !editDraft.account_number.trim())
+                                )
+                                  return toast.error("Paybill number and Account number are required");
+                                // Duplicate check (exclude self)
+                                if (isDuplicatePM(editDraft, i))
+                                  return toast.error("Another method with these details already exists.");
+                                // Commit
+                                setMethods(methods.map((old, idx) => (idx === i ? editDraft : old)));
+                                setEditingIndex(null);
+                                setEditDraft(null);
+                                toast.success("Payment method updated.");
+                              }}
+                            >
+                              <Check className="h-3 w-3" />
+                              Save
+                            </Button>
+                          </div>
+                        </div>
+                      );
+                    }
+
+                    // ── Normal (view) card ────────────────────────────────
                     return (
                       <div
                         key={i}
@@ -693,7 +874,7 @@ function CreateProfile() {
                         </div>
 
                         {/* Actions */}
-                        <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                        <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
                           {!m.is_primary && (
                             <span className="text-[11px] font-medium text-primary opacity-0 group-hover:opacity-100 transition-opacity mr-1 hidden sm:inline-block">
                               Click to make primary
@@ -702,8 +883,21 @@ function CreateProfile() {
                           <Button
                             size="icon"
                             variant="ghost"
+                            className="h-8 w-8 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
+                            onClick={() => {
+                              setEditingIndex(i);
+                              setEditDraft({ ...m });
+                            }}
+                            title="Edit"
+                          >
+                            <Pencil className="h-3.5 w-3.5" />
+                          </Button>
+                          <Button
+                            size="icon"
+                            variant="ghost"
                             className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
                             onClick={() => handleDeleteMethod(i)}
+                            title="Delete"
                           >
                             <Trash2 className="h-4 w-4" />
                           </Button>
