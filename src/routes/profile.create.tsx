@@ -33,17 +33,45 @@ const emptyPM = (): PM => ({
   method_type: "send_money", label: "", account_name: "", account_number: "", paybill_number: "", is_primary: false,
 });
 
-const profileSchema = z.object({
-  first_name: z.string().trim().min(2, "First name too short").max(40),
-  surname: z.string().trim().min(2, "Surname too short").max(40),
-  display_name: z.string().trim().max(60).optional().or(z.literal("")),
-  phone: z.string().trim().regex(/^\d{10}$/, "Phone number must be 10 digits"),
-  vehicle_type: z.string().min(2).max(40),
-  plate_number: z.string().trim().min(3, "Enter a valid plate number").max(20),
-  route: z.string().trim().min(2, "Enter your route").max(100),
-  city: z.string().trim().min(2).max(60),
-  bio: z.string().max(280).optional().or(z.literal("")),
-});
+// ── Plate number format rules per vehicle category ──────────────────────────
+const PLATE_FORMATS = {
+  Boda:   { regex: /^K[A-Z]{3} \d{3}[A-Z]$/, placeholder: "KMGB 001K", hint: "KXXX 000X", maxLen: 9 },
+  Tuktuk: { regex: /^K[A-Z]{3} \d{3}[A-Z]$/, placeholder: "KTWB 001K", hint: "KXXX 000X", maxLen: 9 },
+  Taxi:   { regex: /^K[A-Z]{2} \d{3}[A-Z]$/, placeholder: "KDY 001K",  hint: "KXX 000X",  maxLen: 8 },
+  Matatu: { regex: /^K[A-Z]{2} \d{3}[A-Z]$/, placeholder: "KDY 001K",  hint: "KXX 000X",  maxLen: 8 },
+} as const;
+
+// Auto-insert the space between the letter prefix and the numeric+suffix block
+function formatPlate(raw: string, vehicleType: string): string {
+  const clean = raw.replace(/[^A-Za-z0-9]/g, "").toUpperCase();
+  const letterCount = vehicleType === "Boda" || vehicleType === "Tuktuk" ? 4 : 3;
+  const trimmed = clean.slice(0, letterCount + 4); // letters + 3 digits + 1 suffix letter
+  if (trimmed.length <= letterCount) return trimmed;
+  return `${trimmed.slice(0, letterCount)} ${trimmed.slice(letterCount)}`;
+}
+
+const profileSchema = z
+  .object({
+    first_name: z.string().trim().min(2, "First name too short").max(40),
+    surname: z.string().trim().min(2, "Surname too short").max(40),
+    display_name: z.string().trim().max(60).optional().or(z.literal("")),
+    phone: z.string().trim().regex(/^\d{10}$/, "Phone number must be 10 digits"),
+    vehicle_type: z.string().min(2).max(40),
+    plate_number: z.string().trim().min(1, "Enter a plate number"),
+    route: z.string().trim().min(2, "Enter your route").max(100),
+    city: z.string().trim().min(2).max(60),
+    bio: z.string().max(280).optional().or(z.literal("")),
+  })
+  .superRefine((d, ctx) => {
+    const fmt = PLATE_FORMATS[d.vehicle_type as keyof typeof PLATE_FORMATS];
+    if (fmt && !fmt.regex.test(d.plate_number.trim())) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `Invalid plate format for ${d.vehicle_type}. Expected: ${fmt.hint} (e.g. ${fmt.placeholder})`,
+        path: ["plate_number"],
+      });
+    }
+  });
 
 function CreateProfile() {
   const { user, loading } = useAuth();
@@ -378,7 +406,10 @@ function CreateProfile() {
               <div className="grid sm:grid-cols-3 gap-4">
                 <div className="space-y-1">
                   <Label>Vehicle type *</Label>
-                  <Select value={data.vehicle_type} onValueChange={(v) => setData({ ...data, vehicle_type: v })}>
+                  <Select
+                    value={data.vehicle_type}
+                    onValueChange={(v) => setData({ ...data, vehicle_type: v, plate_number: "" })}
+                  >
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="Boda">Boda (motorbike)</SelectItem>
@@ -390,7 +421,21 @@ function CreateProfile() {
                 </div>
                 <div className="space-y-1">
                   <Label>Plate number *</Label>
-                  <Input value={data.plate_number} onChange={(e) => setData({ ...data, plate_number: e.target.value.toUpperCase() })} maxLength={20} placeholder="KMC 456B" />
+                  <Input
+                    value={data.plate_number}
+                    onChange={(e) =>
+                      setData({ ...data, plate_number: formatPlate(e.target.value, data.vehicle_type) })
+                    }
+                    maxLength={PLATE_FORMATS[data.vehicle_type as keyof typeof PLATE_FORMATS]?.maxLen ?? 9}
+                    placeholder={PLATE_FORMATS[data.vehicle_type as keyof typeof PLATE_FORMATS]?.placeholder ?? "KXX 000X"}
+                    className="font-mono tracking-widest uppercase"
+                  />
+                  <p className="text-[10px] text-muted-foreground">
+                    Format:{" "}
+                    <span className="font-mono font-semibold">
+                      {PLATE_FORMATS[data.vehicle_type as keyof typeof PLATE_FORMATS]?.hint ?? "KXX 000X"}
+                    </span>
+                  </p>
                 </div>
                 <div className="space-y-1">
                   <Label>Route *</Label>
